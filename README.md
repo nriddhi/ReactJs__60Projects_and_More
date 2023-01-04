@@ -1,6 +1,6 @@
-# ReactJs__60Projects_and_More
+# 60 plus and more React and Node Js Projects
 
-###Project1 => Eshop, An Ecommerce MERN Stack Project
+#Project1 => Eshop, An Ecommerce MERN Stack Project
 
 MIT License
 
