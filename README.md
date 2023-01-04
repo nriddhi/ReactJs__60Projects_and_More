@@ -1,4 +1,4 @@
-# 60 plus and more React and Node Js Projects
+# 60+ and more React, Node, Express JS and Mongo DB Projects
 
 #Project1 => Eshop, An Ecommerce MERN Stack Project
 
