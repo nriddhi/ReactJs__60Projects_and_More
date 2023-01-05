@@ -2,8 +2,8 @@ import React from "react";
 import { useState } from "react";
 import product1 from "../front/assets/images/products/01.png";
 import { CaretDownOutlined } from "@ant-design/icons";
-import { Dropdown, Space, Select } from "antd";
-
+import { Select } from "antd";
+import logo_icon from  './assets/images/logo-icon.png';
 export default function Header() {
   const [cartDrop, setCartDrop] = useState(false);
 
@@ -190,7 +190,7 @@ export default function Header() {
                   <div className="logo d-none d-lg-flex">
                     <a href="index.html">
                       <img
-                        src="assets/images/logo-icon.png"
+                        src={logo_icon}
                         className="logo-icon"
                         alt=""
                       />
