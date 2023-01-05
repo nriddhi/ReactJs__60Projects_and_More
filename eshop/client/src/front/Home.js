@@ -1,14 +1,46 @@
 import React from 'react'
 import Header from './Header'
 import SliderC from './Slider'
-
+import { useEffect, useState } from 'react';
+import { BsFillCartCheckFill } from "react-icons/bs";
+import { AiFillDollarCircle } from "react-icons/ai";
+import promo1 from './assets/images/promo/01.png';
+import promo2 from './assets/images/promo/02.png';
+import promo3 from './assets/images/promo/03.png';
 
 export default function Home() {
+
+	const [IsShown, setIsShown] = useState(false);
+
+	const removeMsg = ()  => {
+     
+		localStorage.setItem("discountmsg", "0");
+		setIsShown(false);
+
+	}
+       useEffect(() => {
+		const discountMsg = localStorage.getItem("discountmsg")
+		if (!discountMsg) {
+			setIsShown(true);
+			localStorage.setItem("discountmsg", "1");
+		} else if (discountMsg===0)
+		{
+			setIsShown(false);
+		} else if(discountMsg===1)
+		{
+			setIsShown(true);
+		}
+
+		console.log(discountMsg, IsShown);
+
+	   });
+
+
   return (
     <>
     <b className="screen-overlay"></b>
 	<div className="wrapper">
-		<div className="discount-alert d-none d-lg-block">
+		{IsShown && <div className="discount-alert d-none d-lg-block">
 			<div className="alert alert-dismissible fade show shadow-none rounded-0 mb-0 border-bottom">
 				<div className="d-lg-flex align-items-center gap-2 justify-content-center">
 					<p className="mb-0">Get Up to <strong>40% OFF</strong> New-Season Styles</p>
@@ -16,9 +48,9 @@ export default function Home() {
 					<a href="" className="bg-dark text-white px-1 font-13 cursor-pointer">Women</a>
 					<p className="mb-0 font-13">*Limited time only</p>
 				</div>
-				<button type="button" className="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+				<button type="button" className="btn-close" data-bs-dismiss="alert" onClick={removeMsg} aria-label="Close"></button>
 			</div>
-		</div>
+		</div> }
 	<Header></Header>	
 	<SliderC></SliderC>	
 		<div className="page-wrapper">
@@ -28,8 +60,8 @@ export default function Home() {
 					<div className="container">
 						<div className="row row-cols-1 row-cols-lg-3 row-group align-items-center">
 							<div className="col">
-								<div className="d-flex align-items-center p-3 bg-white">
-									<div className="fs-1"><i className='bx bx-taxi'></i>
+								<div className="d-flex align-items-center p-3 bg-white icon-color">
+									<div className="fs-1"><BsFillCartCheckFill/>
 									</div>
 									<div className="info-box-content ps-3">
 										<h6 className="mb-0">FREE SHIPPING &amp; RETURN</h6>
@@ -39,7 +71,7 @@ export default function Home() {
 							</div>
 							<div className="col">
 								<div className="d-flex align-items-center p-3 bg-white">
-									<div className="fs-1"><i className='bx bx-dollar-circle'></i>
+									<div className="fs-1"><AiFillDollarCircle />
 									</div>
 									<div className="info-box-content ps-3">
 										<h6 className="mb-0">MONEY BACK GUARANTEE</h6>
@@ -69,7 +101,7 @@ export default function Home() {
 								<div className="card rounded-0 border shadow-none">
 									<div className="row g-0 align-items-center">
 										<div className="col">
-											<img src="assets/images/promo/01.png" className="img-fluid" alt="" />
+											<img src={promo1} className="img-fluid" alt="" />
 										</div>
 										<div className="col">
 											<div className="card-body">
@@ -84,7 +116,7 @@ export default function Home() {
 								<div className="card rounded-0 border shadow-none">
 									<div className="row g-0 align-items-center">
 										<div className="col">
-											<img src="assets/images/promo/02.png" className="img-fluid" alt="" />
+											<img src={promo2} className="img-fluid" alt="" />
 										</div>
 										<div className="col">
 											<div className="card-body">
@@ -99,7 +131,7 @@ export default function Home() {
 								<div className="card rounded-0 border shadow-none">
 									<div className="row g-0 align-items-center">
 										<div className="col">
-											<img src="assets/images/promo/03.png" className="img-fluid" alt="" />
+											<img src={promo3} className="img-fluid" alt="" />
 										</div>
 										<div className="col">
 											<div className="card-body">

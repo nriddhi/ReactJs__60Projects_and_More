@@ -138,7 +138,7 @@ export default function Header() {
                   onChange={handleChange}
                   options={items2}
                   />
-                </li>
+        </li>
               
                
                 <li className="nav-item dropdown">
@@ -205,16 +205,17 @@ export default function Header() {
                     className="form-control w-100"
                     placeholder="Search for Products"
                   />
-                  <select
-                    className="form-select flex-shrink-0"
-                    aria-label="Default select example"
-                    defaultValue="2"
-                  >
-                    <option selected>All Categories</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
-                  </select>{" "}
+                  <li className="nav-item dropdown">
+				  <Select
+				    suffixIcon={<CaretDownOutlined/>}
+                  defaultValue='All Categories'
+                  style={{ width:170 }}
+                  listHeight={2500}
+                  size='large'
+                  onChange={handleChange}
+                  options={items2}
+                  />
+        </li>
                   <span className="input-group-text cursor-pointer bg-transparent">
                     <i className="bx bx-search"></i>
                   </span>
