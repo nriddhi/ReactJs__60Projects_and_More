@@ -4,6 +4,12 @@
 
 #Project2 => ChatApp, MERN Stack based project
 
+#project3 => BookShop. MERN stack based project
+
+#project4 => WeatherApp, MERN stcak based project
+
+#project5 => YoutubeClone, MERN stack based project
+
 MIT License
 
 Copyright (c) 2023 Nayeem Hyder Riddhi
