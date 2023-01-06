@@ -2,6 +2,8 @@
 
 #Project1 => Eshop, An Ecommerce MERN Stack Project
 
+#Project2 => ChatApp, MERN Stack based project
+
 MIT License
 
 Copyright (c) 2023 Nayeem Hyder Riddhi
