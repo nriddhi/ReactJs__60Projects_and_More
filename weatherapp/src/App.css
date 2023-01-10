@@ -161,7 +161,7 @@ h6 {
   height: 1px;
   width: 100%;
   background: #e0e0e0;
-  margin: 2rem 0;
+  margin: 1rem 0;
 }
 
 .top-header {
@@ -299,7 +299,7 @@ img {
 .city {
   text-transform: capitalize;
   font-size: 2rem;
-  margin: 2rem 0;
+  margin: 0.75rem 0;
 }
 
 .loader {
