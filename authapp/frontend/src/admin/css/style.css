@@ -1,0 +1,74 @@
+.instructions {
+    font-size: 0.75rem;
+    border-radius: 0.5rem;
+    background: #000;
+    color: #fff;
+    padding: 0.25rem;
+    position: relative;
+    bottom: -10px;
+}
+
+.instructions > svg {
+    margin-right: 0.25rem;
+}
+
+.offscreen {
+    position: absolute;
+    left: -9999px;
+}
+
+.form-group span.eye {
+    float: right;
+    margin-right: 6px;
+    margin-top: -28px;
+    position: relative;
+    z-index: 2;
+}
+
+.hide {
+    display: none;
+}
+
+.valid {
+    color: limegreen;
+    margin-left: 0.25rem;
+    margin-bottom: 2px;
+}
+
+.invalid {
+    color: red;
+    margin-left: 0.25rem;
+    margin-bottom: 2px;
+}
+
+.errmsg {
+    background-color: lightpink;
+    color: firebrick;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.successmsg {
+    background-color: #21a521;
+    color: #f7f5f5;
+    font-weight: bold;
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.buttons {
+    display: inline-block !important;
+}
+
+.social-buttons {
+    width: 100%;
+    text-align: center;
+    padding-top: 7px;
+}
+
+.kep-login-facebook {
+    font-family: inherit !important;
+    font-size: calc(.27548vw + 8.71074px) !important;
+    padding: calc(0.34435vw + 5.38843px) calc(0.34435vw + 9.38843px) !important;
+}
