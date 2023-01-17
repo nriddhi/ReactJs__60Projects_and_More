@@ -9,6 +9,12 @@ function App() {
 
   const toggle = () => setModal(!modal);
 
+  const handleSubmit = (e) => {
+
+    e.preventDefault();
+
+  }
+
   return (
     <Fragment>
     <div className="container-xl">
@@ -172,7 +178,7 @@ function App() {
 				</div>
 				<div class="modal-footer">
 					<input type="button" class="btn btn-default" value="Cancel" onClick={toggle} />
-					<input type="submit" class="btn btn-success" value="Add" />
+					<input type="submit" class="btn btn-success" value="Add" onClick={handleSubmit} />
 				</div>
 			</form>
 		
