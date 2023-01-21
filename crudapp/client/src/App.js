@@ -1,19 +1,81 @@
 import './App.css';
-import { Table, Button, Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
+import {  Modal } from 'reactstrap'
 import { Fragment, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
+import { useCreateDataMutation, useEditDataMutation, useGetDataQuery } from './store/ApiSlice';
+import FormData from 'form-data';
+
 function App() {
 
+  const [userData, {isError}] = useCreateDataMutation();
+  const {data, isLoading} = useGetDataQuery();
+  const [editData, {isLoading:loadData}]  = useEditDataMutation();
   const [modal, setModal] = useState(false);
+  const [emodal, seteModal] = useState(false);
+  const [editResData, setEditResData] = useState('');
+
+  const [id, setId] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [mobile, setMobile] = useState('');
 
   const toggle = () => setModal(!modal);
+
+  const etoggle = async(e, id) => { 
+    e.preventDefault();
+    if(id!==undefined) {
+    const editRes= await editData({id, data});
+    setEditResData(editRes);
+    setId(editRes.data? editRes.data._id: '');
+    setName(editRes.data? editRes.data.name: '');
+    setEmail(editRes.data? editRes.data.email: '');
+    setAddress(editRes.data? editRes.data.address: '');
+    setMobile(editRes.data? editRes.data.mobile: '');
+    }
+    console.log(id);
+    seteModal(!emodal);
+  }
+  
 
   const handleSubmit = (e) => {
 
     e.preventDefault();
 
+    const formdata = new FormData();
+
+    formdata.append('name', name);
+    formdata.append('email', email);
+    formdata.append('address', address);
+    formdata.append('mobile', mobile);
+
+
+    const response = userData({
+      name, email, address, mobile
+    });
+
+
   }
+
+  const handleUpdate = (e) => {
+
+    e.preventDefault();
+
+    const formdata = new FormData();
+
+    
+    formdata.append('id', id);
+    formdata.append('name', name);
+    formdata.append('email', email);
+    formdata.append('address', address);
+    formdata.append('mobile', mobile);
+
+    const response = editData({id, name, email, address, mobile });
+
+  }
+  
+  if(isLoading && loadData) return 'Loading...';
 
   return (
     <Fragment>
@@ -37,7 +99,7 @@ function App() {
               <th>
                 <span className="custom-checkbox">
                   <input type="checkbox" id="selectAll" />
-                  <label for="selectAll"></label>
+                  <label htmlFor="selectAll"></label>
                 </span>
               </th>
               <th>Name</th>
@@ -47,91 +109,27 @@ function App() {
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody>				
-            <tr>
+          <tbody>	
+            {	data ? data.map((values) => (	
+            <tr key={values._id}>
               <td>
                 <span className="custom-checkbox">
                   <input type="checkbox" id="checkbox5" name="options[]" value="1" />
-                  <label for="checkbox5"></label>
+                  <label htmlFor="checkbox5"></label>
                 </span>
               </td>
-              <td>Martin Blank</td>
-              <td>martinblank@mail.com</td>
-              <td>Via Monte Bianco 34, Turin, Italy</td>
-              <td>(480) 631-2097</td>
+              <td>{values.name}</td>
+              <td>{values.email}</td>
+              <td>{values.address}</td>
+              <td>{values.mobile}</td>
               <td>
-                <div className="edit" ><FiEdit></FiEdit></div>
-                <div className="delete"><FiTrash2></FiTrash2></div>
+                <div onClick={(e) => etoggle(e, values._id)} className="edit" ><FiEdit></FiEdit></div>
+                <a href={`delete/${values._id}`} className="delete"><FiTrash2></FiTrash2></a>
               </td>
             </tr> 
-            <tr>
-              <td>
-                <span className="custom-checkbox">
-                  <input type="checkbox" id="checkbox5" name="options[]" value="1" />
-                  <label for="checkbox5"></label>
-                </span>
-              </td>
-              <td>Martin Blank</td>
-              <td>martinblank@mail.com</td>
-              <td>Via Monte Bianco 34, Turin, Italy</td>
-              <td>(480) 631-2097</td>
-              <td>
-                <div className="edit" ><FiEdit></FiEdit></div>
-                <div className="delete"><FiTrash2></FiTrash2></div>
-              </td>
-            </tr> 
-
-            <tr>
-              <td>
-                <span className="custom-checkbox">
-                  <input type="checkbox" id="checkbox5" name="options[]" value="1" />
-                  <label for="checkbox5"></label>
-                </span>
-              </td>
-              <td>Martin Blank</td>
-              <td>martinblank@mail.com</td>
-              <td>Via Monte Bianco 34, Turin, Italy</td>
-              <td>(480) 631-2097</td>
-              <td>
-                <div className="edit" ><FiEdit></FiEdit></div>
-                <div className="delete"><FiTrash2></FiTrash2></div>
-              </td>
-            </tr> 
-
-            <tr>
-              <td>
-                <span className="custom-checkbox">
-                  <input type="checkbox" id="checkbox5" name="options[]" value="1" />
-                  <label for="checkbox5"></label>
-                </span>
-              </td>
-              <td>Martin Blank</td>
-              <td>martinblank@mail.com</td>
-              <td>Via Monte Bianco 34, Turin, Italy</td>
-              <td>(480) 631-2097</td>
-              <td>
-                <div className="edit" ><FiEdit></FiEdit></div>
-                <div className="delete"><FiTrash2></FiTrash2></div>
-              </td>
-            </tr> 
-
-            <tr>
-              <td>
-                <span className="custom-checkbox">
-                  <input type="checkbox" id="checkbox5" name="options[]" value="1" />
-                  <label for="checkbox5"></label>
-                </span>
-              </td>
-              <td>Martin Blank</td>
-              <td>martinblank@mail.com</td>
-              <td>Via Monte Bianco 34, Turin, Italy</td>
-              <td>(480) 631-2097</td>
-              <td>
-                <div className="edit" ><FiEdit></FiEdit></div>
-                <div className="delete"><FiTrash2></FiTrash2></div>
-              </td>
-            </tr> 
-
+            ))
+            : <tr><td>No Data Available</td></tr>
+            }
           </tbody>
         </table>
         <div className="clearfix">
@@ -152,33 +150,72 @@ function App() {
 
   <Modal isOpen={modal} toggle={toggle} >
   <div>
-		<div class="modal-content">
+		<div className="modal-content">
 			<form>
-				<div class="modal-header">						
-					<h4 class="modal-title">Add Employee</h4>
-					<button type="button" class="close" onClick={toggle}>&times;</button>
+				<div className="modal-header">						
+					<h4 className="modal-title">Add Employee</h4>
+					<button type="button" className="close" onClick={toggle}>&times;</button>
 				</div>
-				<div class="modal-body">					
-					<div class="form-group">
+				<div className="modal-body">					
+					<div className="form-group">
 						<label>Name</label>
-						<input type="text" class="form-control" required />
+						<input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)} className="form-control" required />
 					</div>
-					<div class="form-group">
+					<div className="form-group">
 						<label>Email</label>
-						<input type="email" class="form-control" required />
+						<input type="email" name='email' value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" required />
 					</div>
-					<div class="form-group">
+					<div className="form-group">
 						<label>Address</label>
-						<textarea class="form-control" required></textarea>
+						<textarea name='address' value={address} onChange={(e) => setAddress(e.target.value)} className="form-control" required></textarea>
 					</div>
-					<div class="form-group">
+					<div className="form-group">
 						<label>Phone</label>
-						<input type="text" class="form-control" required />
+						<input type="text" name='phone' value={mobile} onChange={(e) => setMobile(e.target.value)} className="form-control" required />
 					</div>					
 				</div>
-				<div class="modal-footer">
-					<input type="button" class="btn btn-default" value="Cancel" onClick={toggle} />
-					<input type="submit" class="btn btn-success" value="Add" onClick={handleSubmit} />
+				<div className="modal-footer">
+					<input type="button" className="btn btn-default" value="Cancel" onClick={toggle} />
+					<input type="submit" className="btn btn-success" value="Add" onClick={handleSubmit} />
+				</div>
+			</form>
+		
+	</div>
+</div>
+  </Modal>
+
+  <Modal isOpen={emodal} toggle={etoggle} >
+  <div>
+		<div className="modal-content">
+			<form>
+				<div className="modal-header">						
+					<h4 className="modal-title">Add Employee</h4>
+					<button type="button" className="close" onClick={etoggle}>&times;</button>
+				</div>
+				<div className="modal-body">	
+
+        <input type="hidden" name='id'  defaultValue={editResData.data? editResData.data._id : id} onChange={(e) => setId(e.target.value)} className="form-control"/>			
+
+					<div className="form-group">
+						<label>Name</label>
+						<input type="text" name='name'  defaultValue={editResData.data? editResData.data.name : name} onChange={(e) => setName(e.target.value)} className="form-control" required />
+					</div>
+					<div className="form-group">
+						<label>Email</label>
+						<input type="email" name='email' defaultValue={editResData.data? editResData.data.email : email} onChange={(e) => setEmail(e.target.value)} className="form-control" required />
+					</div>
+					<div className="form-group">
+						<label>Address</label>
+						<textarea name='address' defaultValue={editResData.data? editResData.data.address : address} onChange={(e) => setAddress(e.target.value)} className="form-control" required></textarea>
+					</div>
+					<div className="form-group">
+						<label>Phone</label>
+						<input type="text" name='phone' defaultValue={editResData.data? editResData.data.mobile : mobile} onChange={(e) => setMobile(e.target.value)} className="form-control" required />
+					</div>					
+				</div>
+				<div className="modal-footer">
+					<input type="button" className="btn btn-default" value="Cancel" onClick={etoggle} />
+					<input type="submit" className="btn btn-success" value="Update" onClick={handleUpdate} />
 				</div>
 			</form>
 		

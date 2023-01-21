@@ -14,7 +14,17 @@ export const apiSlice = createApi({
         query: (data) => ({
                url:'/create',
                method: 'POST',
-               data: data
+               body: data
+        })
+
+    }),
+
+    getData: builder.query({
+
+        query: (data) => ({
+               url:'/getData',
+               method: 'GET',
+               body: data
         })
 
     }),
@@ -22,9 +32,9 @@ export const apiSlice = createApi({
     editData: builder.mutation({
     
         query: (data) => ({
-            url: '/edit',
+            url: `/edit/${data.id}`,
             method: 'PATCH',
-            data: data,
+            body:data,
         }),
 
     }),
@@ -49,8 +59,6 @@ export const apiSlice = createApi({
 
     }),
 
-
-
   })
 
 });
@@ -58,6 +66,7 @@ export const apiSlice = createApi({
 
 export const { 
     useCreateDataMutation,
+    useGetDataQuery,
     useEditDataMutation,
     useDeleteDataMutation,
     useDeleteBatchMutation
