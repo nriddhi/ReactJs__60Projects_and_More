@@ -6,10 +6,11 @@ import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useCreateDataMutation, useEditDataMutation, useGetDataQuery } from './store/ApiSlice';
 import FormData from 'form-data';
 
+
 function App() {
 
   const [userData, {isError}] = useCreateDataMutation();
-  const {data, isLoading} = useGetDataQuery();
+  const {data, isLoading, isFetching} = useGetDataQuery();
   const [editData, {isLoading:loadData}]  = useEditDataMutation();
   const [modal, setModal] = useState(false);
   const [emodal, seteModal] = useState(false);
@@ -20,6 +21,17 @@ function App() {
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [mobile, setMobile] = useState('');
+
+    const [currentPage, setcurrentPage] = useState(1);
+    const [itemsPerPage, setitemsPerPage] = useState(5);
+  
+    const [pageNumberLimit, setpageNumberLimit] = useState(5);
+    const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
+    const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+
+
+  if(isLoading || loadData || isFetching ) return 'Loading...';
+
 
   const toggle = () => setModal(!modal);
 
@@ -37,7 +49,6 @@ function App() {
     console.log(id);
     seteModal(!emodal);
   }
-  
 
   const handleSubmit = (e) => {
 
@@ -74,8 +85,72 @@ function App() {
     const response = editData({id, name, email, address, mobile });
 
   }
+
+
+  /* Pagination */
+
+  const handleClick = (event) => {
+    setcurrentPage(Number(event.target.id));
+  };
+
+const pages = [];
+
+if( data.length > 0 || data !=='undefined') {  
+for (let i = 1; i <= Math.ceil(data.length / itemsPerPage); i++) {
+  pages.push(i);
+}
+}
+
+const indexOfLastItem = currentPage * itemsPerPage;
+const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+
+const renderPageNumbers = pages.map((number) => {
+  if (number < maxPageNumberLimit + 1 && number > minPageNumberLimit) {
+    return (
+      <li className={currentPage == number ? "active" : 'page-item'}>
+        <a key={number}
+        id={number} className='page-link' onClick={handleClick}>{number}</a>
+      </li>
+    );
+  } else {
+    return null;
+  }
+});
+
+const handleNextbtn = () => {
+  setcurrentPage(currentPage + 1);
+
+  if (currentPage + 1 > maxPageNumberLimit) {
+    setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
+    setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
+  }
+};
+
+const handlePrevbtn = () => {
+  setcurrentPage(currentPage - 1);
+
+  if ((currentPage - 1) % pageNumberLimit == 0) {
+    setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
+    setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
+  }
+};
+
+let pageIncrementBtn = null;
+if (pages.length > maxPageNumberLimit) {
+  pageIncrementBtn = <li onClick={handleNextbtn}> &hellip; </li>;
+}
+
+let pageDecrementBtn = null;
+if (minPageNumberLimit >= 1) {
+  pageDecrementBtn = <li onClick={handlePrevbtn}> &hellip; </li>;
+}
+
+const handleLoadMore = () => {
+  setitemsPerPage(itemsPerPage + 2);
+};
   
-  if(isLoading && loadData) return 'Loading...';
 
   return (
     <Fragment>
@@ -110,39 +185,56 @@ function App() {
             </tr>
           </thead>
           <tbody>	
-            {	data ? data.map((values) => (	
-            <tr key={values._id}>
-              <td>
-                <span className="custom-checkbox">
-                  <input type="checkbox" id="checkbox5" name="options[]" value="1" />
-                  <label htmlFor="checkbox5"></label>
-                </span>
-              </td>
-              <td>{values.name}</td>
-              <td>{values.email}</td>
-              <td>{values.address}</td>
-              <td>{values.mobile}</td>
-              <td>
-                <div onClick={(e) => etoggle(e, values._id)} className="edit" ><FiEdit></FiEdit></div>
-                <a href={`delete/${values._id}`} className="delete"><FiTrash2></FiTrash2></a>
-              </td>
-            </tr> 
-            ))
-            : <tr><td>No Data Available</td></tr>
-            }
+  
+    { currentItems ? currentItems.map((values) => (	
+    
+    <tr key={values._id}>
+      <td>
+        <span className="custom-checkbox">
+          <input type="checkbox" id="checkbox5" name="options[]" value="1" />
+          <label htmlFor="checkbox5"></label>
+        </span>
+      </td>
+      <td>{values.name}</td>
+      <td>{values.email}</td>
+      <td>{values.address}</td>
+      <td>{values.mobile}</td>
+      <td>
+        <div onClick={(e) => etoggle(e, values._id)} className="edit" ><FiEdit></FiEdit></div>
+        <a href={`delete/${values._id}`} className="delete"><FiTrash2></FiTrash2></a>
+      </td>
+    </tr> 
+    ))
+    : <tr><td>No Data Available</td></tr>
+  }
+  
           </tbody>
         </table>
+
         <div className="clearfix">
-          <div className="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
-          <ul className="pagination">
-            <li className="page-item disabled"><a href="#">Previous</a></li>
-            <li className="page-item"><a href="#" className="page-link">1</a></li>
-            <li className="page-item"><a href="#" className="page-link">2</a></li>
-            <li className="page-item active"><a href="#" className="page-link">3</a></li>
-            <li className="page-item"><a href="#" className="page-link">4</a></li>
-            <li className="page-item"><a href="#" className="page-link">5</a></li>
-            <li className="page-item"><a href="#" className="page-link">Next</a></li>
-          </ul>
+        <div className="hint-text">Showing <b>{indexOfLastItem}</b> out of <b>{data.length}</b> entries</div>
+        <ul className="pagination">
+          <li className="page-item">
+            <button
+              onClick={handlePrevbtn}
+              disabled={currentPage == pages[0] ? true : false}
+            >
+              Previous
+            </button>
+          </li>
+          {pageDecrementBtn}
+          {renderPageNumbers}
+          {pageIncrementBtn}
+  
+          <li>
+            <button
+              onClick={handleNextbtn}
+              disabled={currentPage == pages[pages.length - 1] ? true : false}
+            >
+              Next
+            </button>
+          </li>
+        </ul>
         </div>
       </div>
     </div>        
