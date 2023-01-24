@@ -12,6 +12,7 @@ function App() {
   const [userData, {isError}] = useCreateDataMutation();
   const {data, isLoading, isFetching} = useGetDataQuery();
   const [editData, {isLoading:loadData}]  = useEditDataMutation();
+  
   const [modal, setModal] = useState(false);
   const [emodal, seteModal] = useState(false);
   const [editResData, setEditResData] = useState('');
@@ -29,24 +30,34 @@ function App() {
     const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
     const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
 
+    
+    if(isLoading || loadData || isFetching ) return 'Loading...';
 
-  if(isLoading || loadData || isFetching ) return 'Loading...';
+  
 
-
-  const toggle = () => setModal(!modal);
+  const toggle = () => { 
+    setId(''); 
+    setName('');
+    setAddress('');
+    setEmail('');
+    setMobile('');
+   setModal(!modal);
+  }
 
   const etoggle = async(e, id) => { 
     e.preventDefault();
     if(id!==undefined) {
-    const editRes= await editData({id, data});
-    setEditResData(editRes);
-    setId(editRes.data? editRes.data._id: '');
-    setName(editRes.data? editRes.data.name: '');
-    setEmail(editRes.data? editRes.data.email: '');
-    setAddress(editRes.data? editRes.data.address: '');
-    setMobile(editRes.data? editRes.data.mobile: '');
+      const editRes = await fetch('http://localhost:5000/api/edit/' + id, {method: 'PATCH'})
+      .then((response) => response.json())
+      .then((json) => {
+        setId(json? json._id: '');
+        setName(json? json.name: '');
+        setEmail(json? json.email: '');
+        setAddress(json? json.address: '');
+        setMobile(json? json.mobile: '');
+
+      });
     }
-    console.log(id);
     seteModal(!emodal);
   }
 
@@ -69,12 +80,11 @@ function App() {
 
   }
 
-  const handleUpdate = (e) => {
+  const handleUpdate = async(e) => {
 
     e.preventDefault();
 
     const formdata = new FormData();
-
     
     formdata.append('id', id);
     formdata.append('name', name);
@@ -82,7 +92,15 @@ function App() {
     formdata.append('address', address);
     formdata.append('mobile', mobile);
 
-    const response = editData({id, name, email, address, mobile });
+    await fetch('http://localhost:5000/api/edit/' + id, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+    id:id, name:name, email, address, mobile 
+    }),
+})
+
+    
 
   }
 
@@ -279,7 +297,7 @@ const handleLoadMore = () => {
   <Modal isOpen={emodal} toggle={etoggle} >
   <div>
 		<div className="modal-content">
-			<form>
+			<form onSubmit={handleUpdate}>
 				<div className="modal-header">						
 					<h4 className="modal-title">Add Employee</h4>
 					<button type="button" className="close" onClick={etoggle}>&times;</button>
@@ -307,7 +325,7 @@ const handleLoadMore = () => {
 				</div>
 				<div className="modal-footer">
 					<input type="button" className="btn btn-default" value="Cancel" onClick={etoggle} />
-					<input type="submit" className="btn btn-success" value="Update" onClick={handleUpdate} />
+					<input type="submit" className="btn btn-success" value="Update" />
 				</div>
 			</form>
 		
