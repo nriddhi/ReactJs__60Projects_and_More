@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { loginFailure, loginStart, loginSuccess } from "../store/Userslice";
@@ -7,6 +8,9 @@ import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
 import { async } from "@firebase/util";
 import { useNavigate } from "react-router-dom";
+
+const serverURL = 'http://localhost:8000';
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -78,9 +82,10 @@ const SignIn = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    dispatch(loginStart());
+   // dispatch(loginStart());
     try {
-      const res = await axios.post("/auth/signin", { name, password });
+      const res = await axios.post(serverURL+'/api/auth/signin', { name, password }
+      , {credentials: 'include', withCredentials: true});
       dispatch(loginSuccess(res.data));
       navigate("/")
     } catch (err) {
@@ -93,7 +98,7 @@ const SignIn = () => {
     signInWithPopup(auth, provider)
       .then((result) => {
         axios
-          .post("/auth/google", {
+          .post(serverURL+'/api/users/user', {
             name: result.user.displayName,
             email: result.user.email,
             img: result.user.photoURL,
@@ -109,6 +114,30 @@ const SignIn = () => {
       });
   };
 
+  const handleSignUp = async(e) => {
+
+    e.preventDefault();
+
+    try {
+
+      axios({
+        method: 'post',
+        url: serverURL+'/api/auth/signup',
+        data: {
+          username: name,
+          email: email,
+          password: password
+        }
+      });
+
+    }
+    catch(error) {
+      console.log(error);
+    }
+
+
+  }
+
   //TODO: REGISTER FUNCTIONALITY
 
 
@@ -116,7 +145,7 @@ const SignIn = () => {
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
-        <SubTitle>to continue to LamaTube</SubTitle>
+        <SubTitle>to continue to videoTube</SubTitle>
         <Input
           placeholder="username"
           onChange={(e) => setName(e.target.value)}
@@ -140,7 +169,7 @@ const SignIn = () => {
           placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button>Sign up</Button>
+        <Button onClick={handleSignUp}>Sign up</Button>
       </Wrapper>
       <More>
         English(USA)

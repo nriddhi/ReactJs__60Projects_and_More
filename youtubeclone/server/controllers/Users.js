@@ -1,5 +1,8 @@
-export const test = (req, res) => {
+import Users from '../models/User.js';
+import bcrypt from 'bcrypt';
 
-    res.send("Hello, world!");
+export const test = async (req, res) => {
+
+  
 
 }
