@@ -1,12 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  getStorage,
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-} from "firebase/storage";
-import app from "../firebase";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -92,37 +86,7 @@ const Upload = ({ setOpen }) => {
   };
 
   const uploadFile = (file, urlType) => {
-    const storage = getStorage(app);
     const fileName = new Date().getTime() + file.name;
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        urlType === "imgUrl" ? setImgPerc(Math.round(progress)) : setVideoPerc(Math.round(progress));
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-          default:
-            break;
-        }
-      },
-      (error) => {},
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          setInputs((prev) => {
-            return { ...prev, [urlType]: downloadURL };
-          });
-        });
-      }
-    );
   };
 
   useEffect(() => {

@@ -1,8 +1,9 @@
-import Users from '../models/User.js';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+const Users= require('../models/User.js');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-export const signup = async (req, res) => {
+
+const signup = async (req, res) => {
 
     try {
         if(req.body && req.body.username && req.body.password)
@@ -35,7 +36,7 @@ export const signup = async (req, res) => {
     
 }
 
-export const signin = async(req, res) => {
+const signin = async(req, res) => {
 
     try {
           const username = await Users.findOne({ username: req.body.name });
@@ -63,7 +64,7 @@ export const signin = async(req, res) => {
     
           return res
           .status(200)
-          .json({ message: "Logged In Successfully", code:'l200' });
+          .json({ message: "Logged In Successfully", code:'ls200', username:username.username });
         }
     
       catch(err){
@@ -74,7 +75,11 @@ export const signin = async(req, res) => {
 }
 
 
-export const googlesign = (req, res) => {
+const googlesign = (req, res) => {
 
     
 }
+
+exports.signup = signup;
+exports.signin = signin;
+exports.googlesign = googlesign;

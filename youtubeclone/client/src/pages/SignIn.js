@@ -4,9 +4,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import { loginFailure, loginStart, loginSuccess } from "../store/Userslice";
-import { auth, provider } from "../firebase";
-import { signInWithPopup } from "firebase/auth";
-import { async } from "@firebase/util";
 import { useNavigate } from "react-router-dom";
 
 const serverURL = 'http://localhost:8000';
@@ -94,24 +91,17 @@ const SignIn = () => {
   };
 
   const signInWithGoogle = async () => {
-    dispatch(loginStart());
-    signInWithPopup(auth, provider)
-      .then((result) => {
-        axios
-          .post(serverURL+'/api/users/user', {
-            name: result.user.displayName,
-            email: result.user.email,
-            img: result.user.photoURL,
-          })
-          .then((res) => {
-            console.log(res)
-            dispatch(loginSuccess(res.data));
-            navigate("/")
-          });
-      })
-      .catch((error) => {
-        dispatch(loginFailure());
-      });
+
+    window.open('http://localhost:8000/api/auth/google', "_self");
+
+    try {
+      const res = await axios.get(serverURL+'/api/auth/google/callback');
+      dispatch(loginSuccess(res.data));
+      navigate("/")
+    } catch (err) {
+      dispatch(loginFailure());
+    }
+    
   };
 
   const handleSignUp = async(e) => {

@@ -1,8 +1,8 @@
-import Users from '../models/User.js';
-import bcrypt from 'bcrypt';
 
-export const test = async (req, res) => {
+const test = async (req, res) => {
 
   
 
 }
+
+exports.test = test;

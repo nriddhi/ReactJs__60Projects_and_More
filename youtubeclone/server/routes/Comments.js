@@ -1,9 +1,9 @@
-import express from 'express';
+const express = require('express');
 
-import {  } from '../controllers/Comments.js';
+//import {  } from '../controllers/Comments.js';
 
 const router = express.Router();
 
 router.get('/user',);
 
-export default router;
+module.exports = router;
