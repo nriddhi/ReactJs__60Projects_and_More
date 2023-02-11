@@ -51,11 +51,11 @@ const signin = async(req, res) => {
             expiresIn: "3500s",
           });
     
-          if (req.cookies['tube_token']) {
-            req.cookies['tube_token'] = "";
+          if (req.cookies['vtube_token']) {
+            req.cookies['vtube_token'] = "";
           }
           
-          res.cookie('tube_token', accessToken, {
+          res.cookie('vtube_token', accessToken, {
             path: "/",
             httpOnly: true,
             sameSite: "lax",
