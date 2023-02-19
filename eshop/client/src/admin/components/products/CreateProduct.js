@@ -13,8 +13,7 @@ import {
 } from "antd";
 import { Form, FormGroup, Input, Label } from "reactstrap";
 import ReactQuill from "react-quill";
-import FormItemLabel from "antd/es/form/FormItemLabel";
-import { Content } from "antd/es/layout/layout";
+
 
 export default function CreateProduct() {
   const [modal, setModal] = useState(false);
@@ -91,7 +90,7 @@ export default function CreateProduct() {
   };
 
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState('');
   const getBase64 = (img, callback) => {
     const reader = new FileReader();
     reader.addEventListener("load", () => callback(reader.result));
@@ -113,13 +112,14 @@ export default function CreateProduct() {
       setLoading(true);
       return;
     }
-    if (info.file.status === "done") {
+    //console.log(info.file);
+    // if (info.file.status === "error") {
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, (url) => {
         setLoading(false);
         setImageUrl(url);
       });
-    }
+   // }
   };
   const uploadButton = (
     <div>
@@ -344,7 +344,7 @@ export default function CreateProduct() {
                       <div className="section-one">
                         <div className="all-category">
                           <a
-                            href="javascript:void(e)"
+                            href="#"
                             onClick={() => switchTab("allcat")}
                           >
                             All Category
@@ -448,10 +448,10 @@ export default function CreateProduct() {
                     <Label for="featured_image">Product Image</Label>
                     <Upload
                       name="avatar"
+                      action="admin-dashboard/create-product"
                       listType="picture-card"
                       className="avatar-uploader"
                       showUploadList={false}
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                       beforeUpload={beforeUpload}
                       onChange={handleChange2}
                     >

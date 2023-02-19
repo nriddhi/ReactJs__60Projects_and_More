@@ -18415,3 +18415,7 @@ body.full-dark .bootstrap-tagsinput {
 
 .product_options, .stock-flex { display: flex;}
 .pf {font-size: medium; font-weight: 700;}
+.ql-editor p, .ql-editor ol, .ql-editor ul, .ql-editor pre, .ql-editor blockquote, .ql-editor h1, .ql-editor h2, .ql-editor h3, .ql-editor h4, .ql-editor h5, .ql-editor h6
+{
+    color:white !important;
+}

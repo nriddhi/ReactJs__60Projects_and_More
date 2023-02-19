@@ -32,6 +32,8 @@ app.use(passport.authenticate('session'));
 
 app.use(['/api/auth','/valid','/users', '/api/admin'], authRoute);
 
+
+mongoose.set("strictQuery", false);
 mongoose.connect(process.env.MONGO_URL)
 .then(console.log('MongoDB Connected'))
 .catch((err) => console.log(err));
