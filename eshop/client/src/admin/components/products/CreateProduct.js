@@ -1,36 +1,29 @@
 import React, { useState } from "react";
 import "../../css/Back-Css-Inc";
-import demo from "../../images/demo.jpg";
-import { LoadingOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Checkbox,
   InputNumber,
   Select,
-  Upload,
-  message,
-  Modal,
   Button,
 } from "antd";
 import { Form, FormGroup, Input, Label } from "reactstrap";
+import ImageUploading from 'react-images-uploading';
 import ReactQuill from "react-quill";
 
 
 export default function CreateProduct() {
-  const [modal, setModal] = useState(false);
   const [allCategory, setallCategory] = useState(true);
   const [mostUsedCat, setmostUsedCat] = useState(false);
-  const [ImageValue, setImageValue] = useState(demo);
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
   const [featuredImg, setFeaturedImage] = useState("");
+  const [images, setImages] = useState("");
+  const maxNumber = 69;
+
   const [categories, setCategories] = useState("");
   const [tags, setTags] = useState("");
   const [success, setSuccess] = useState(false);
   const [errMsg, setErrMsg] = useState("");
-
-  const toggle = () => {
-    setModal(!modal);
-  };
 
   const switchTab = (value) => {
     if (value === "allcat") {
@@ -70,11 +63,6 @@ export default function CreateProduct() {
     "image",
   ];
 
-  const handleImage = (e) => {
-    setImageValue(URL.createObjectURL(e.target.files[0]));
-    setFeaturedImage(e.target.files[0]);
-  };
-
   const options = [
     { value: "red", Label: "Red" },
     { value: "green", Label: "Green" },
@@ -85,108 +73,15 @@ export default function CreateProduct() {
   };
 
   const [size, setSize] = useState("middle");
-  const handleSizeChange = (e) => {
-    setSize(e.target.value);
+  
+  const onFImageChange = (imageList, addUpdateIndex) => {
+    setFeaturedImage(imageList);
+    console.log(featuredImg);
   };
 
-  const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState('');
-  const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result));
-    reader.readAsDataURL(img);
+  const onImages = (imageList, addUpdateIndex) => {
+    setImages(imageList);
   };
-  const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === "image/jpeg" || file.type === "image/png";
-    if (!isJpgOrPng) {
-      message.error("You can only upload JPG/PNG file!");
-    }
-    const isLt2M = file.size / 1024 / 1024 < 2;
-    if (!isLt2M) {
-      message.error("Image must smaller than 2MB!");
-    }
-    return isJpgOrPng && isLt2M;
-  };
-  const handleChange2 = (info) => {
-    if (info.file.status === "uploading") {
-      setLoading(true);
-      return;
-    }
-    //console.log(info.file);
-    // if (info.file.status === "error") {
-      // Get this url from response in real world.
-      getBase64(info.file.originFileObj, (url) => {
-        setLoading(false);
-        setImageUrl(url);
-      });
-   // }
-  };
-  const uploadButton = (
-    <div>
-      {loading ? <LoadingOutlined /> : <PlusOutlined />}
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
-
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [previewTitle, setPreviewTitle] = useState("");
-  const [fileList, setFileList] = useState([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-2",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-3",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-4",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-  ]);
-  const handleCancel = () => setPreviewOpen(false);
-  const handlePreview = async (file) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
-    setPreviewTitle(
-      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
-    );
-  };
-  const handleChange3 = ({ fileList: newFileList }) => setFileList(newFileList);
-  const uploadButton2 = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -446,52 +341,88 @@ export default function CreateProduct() {
 
                   <FormGroup>
                     <Label for="featured_image">Product Image</Label>
-                    <Upload
-                      name="avatar"
-                      action="admin-dashboard/create-product"
-                      listType="picture-card"
-                      className="avatar-uploader"
-                      showUploadList={false}
-                      beforeUpload={beforeUpload}
-                      onChange={handleChange2}
-                    >
-                      {imageUrl ? (
-                        <img
-                          src={imageUrl}
-                          alt="avatar"
-                          style={{
-                            width: "100%",
-                          }}
-                        />
-                      ) : (
-                        uploadButton
-                      )}
-                    </Upload>
+                    <ImageUploading
+        value={featuredImg}
+        onChange={onFImageChange}
+        dataURLKey="data_url"
+      >
+        {({
+          imageList,
+          onImageUpload,
+          onImageRemoveAll,
+          onImageUpdate,
+          onImageRemove,
+          isDragging,
+          dragProps,
+        }) => (
+          // write your building UI
+          <div className="upload__image-wrapper">
+            <button
+              style={isDragging ? { color: 'red' } : undefined}
+              onClick={onImageUpload}
+              {...dragProps}
+            >
+              Click or Drop here
+            </button>
+            &nbsp;
+            <button onClick={onImageRemoveAll}>Remove Image</button>
+            {imageList.map((image, index) => (
+              <div key={index} className="image-item">
+                <img src={image['data_url']} alt="" width="100" />
+                <div className="image-item__btn-wrapper">
+                  <button onClick={() => onImageUpdate(index)}>Update</button>
+                  <button onClick={() => onImageRemove(index)}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+                    </ImageUploading>
+                   
                   </FormGroup>
 
                   <FormGroup>
                     <Label> Products Gallery</Label>
-                    <Upload
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      listType="picture-card"
-                      fileList={fileList}
-                      onPreview={handlePreview}
-                      onChange={handleChange3}
-                    >
-                      {fileList.length >= 8 ? null : uploadButton}
-                    </Upload>
-                    <Modal
-                      open={previewOpen}
-                      title={previewTitle}
-                      footer={null}
-                      onCancel={handleCancel}
-                    >
-                      <img
-                        alt="example"
-                        style={{ width: "100%" }}
-                        src={previewImage}
-                      />
-                    </Modal>
+                    <ImageUploading
+        multiple
+        value={images}
+        onChange={onImages}
+        maxNumber={maxNumber}
+        dataURLKey="data_url"
+      >
+        {({
+          imageList,
+          onImageUpload,
+          onImageRemoveAll,
+          onImageUpdate,
+          onImageRemove,
+          isDragging,
+          dragProps,
+        }) => (
+          // write your building UI
+          <div className="upload__image-wrapper">
+            <button
+              style={isDragging ? { color: 'red' } : undefined}
+              onClick={onImageUpload}
+              {...dragProps}
+            >
+              Click or Drop here
+            </button>
+            &nbsp;
+            <button onClick={onImageRemoveAll}>Remove all images</button>
+            {imageList.map((image, index) => (
+              <div key={index} className="image-item">
+                <img src={image['data_url']} alt="" width="100" />
+                <div className="image-item__btn-wrapper">
+                  <button onClick={() => onImageUpdate(index)}>Update</button>
+                  <button onClick={() => onImageRemove(index)}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+                    </ImageUploading>
+                    
                   </FormGroup>
                 </div>
               </div>

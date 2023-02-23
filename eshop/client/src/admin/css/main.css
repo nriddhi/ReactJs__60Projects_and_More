@@ -18419,3 +18419,7 @@ body.full-dark .bootstrap-tagsinput {
 {
     color:white !important;
 }
+
+.image-item {
+    display: inline-block;
+}
