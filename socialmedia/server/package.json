@@ -10,5 +10,8 @@
     "social-app"
   ],
   "author": "Nayeem Hyder",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^4.9.5"
+  }
 }
