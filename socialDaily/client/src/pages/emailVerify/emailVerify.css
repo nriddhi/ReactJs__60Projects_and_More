@@ -1,0 +1,51 @@
+.btn-danger {
+    color: #fff;
+    background-color: #f75554;
+    border-color: #f75554;
+    box-shadow: none;
+    margin-top: 15px;
+    cursor: pointer;
+}
+.btn-success {
+    color: #fff;
+    background-color: #0eb947;
+    border-color: #54f545;
+    box-shadow: none;
+    margin-top: 15px;
+    cursor: pointer;
+ }
+.btn-block {
+    display: block;
+    width: 100%;
+}
+.btn-lg, .btn-group-lg > .btn {
+    padding: 0.5rem 1rem;
+    font-size: .91875rem;
+    line-height: 1.5;
+    border-radius: 0.315rem;
+}
+.btn-danger {
+    color: #fff;
+    background-color: #f75554;
+    border-color: #f75554;
+    box-shadow: none;
+}
+.btn {
+    display: inline-block;
+    font-weight: 600;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -webkit-user-select: none;
+    user-select: none;
+    border: 0.0625rem solid transparent;
+    padding: 0.35rem 1.5rem;
+    font-size: .875rem;
+    line-height: 1.6;
+    border-radius: 0.215rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.auth-boxv {
+    text-align: center;
+}

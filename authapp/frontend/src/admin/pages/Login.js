@@ -90,7 +90,7 @@ function Login(props) {
         if(value?.data?.code==='l200'){
             setSuccess('Logged in successfully');
             dispatch(login());
-            toast.success('Logged in Successfully, Redirecting to Dashboard...');
+            toast.success('Logged in Successfully, Redirecting to Home...');
             setTimeout(() => {
                       navigate('/admin-dashboard');  }, 4000);
         } else if (value?.error && value?.error?.data.code==='le404') {

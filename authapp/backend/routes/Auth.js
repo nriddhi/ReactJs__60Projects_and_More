@@ -145,7 +145,7 @@ const crypto = require('crypto');
 
 }
 catch (err) { res.status(500).json(err) }
-});
+  });
 
 const cookieMiddle = (req, res, next) => {
   //res.hasecom_token = !!req.cookies.ecom_token
@@ -238,7 +238,5 @@ router.post("/logout", logout);
     res.redirect(process.env.BASE_URL);
    
   });
-
-
 
 module.exports = router;
