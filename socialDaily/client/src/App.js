@@ -6,6 +6,7 @@ import EmailVerify from './pages/emailVerify/EmailVerify';
 import ForgetPassword from './pages/forgetPassword/ForgetPassword';
 import ResetPassword from './pages/resetPassword/ResetPassword';
 import Home from './pages/home/Home';
+import NCSS from './assets/css/IncludeCss';
 
 function App() {
   return (
@@ -17,7 +18,6 @@ function App() {
     <Route path= "/users/:id/reset/:token" element={<ResetPassword />}/>
     <Route element={<ProtectedRoute />}>
     <Route path="/home" element={<Home />} />
- 
     </Route>
     <Route path="*" element={''} />
  
