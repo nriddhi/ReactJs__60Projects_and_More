@@ -1,46 +1,48 @@
-import React from 'react'
-import { Link } from 'react-router-dom';
-import { BsSearch, BsFillHouseFill, BsFillChatLeftTextFill, BsBellFill } from "react-icons/bs";
-import userImage from '../../images/profile.png';
+import React from "react";
+import { Link } from "react-router-dom";
+import { Search, HomeActive, Friends, Watch, Market, Gaming  } from  "../../svg" 
+import './style.css';
 
 export default function Header() {
-  return (
-    <div>
-	
-	<div className="header">
-		<div className="logo">
-        <Link to='/home'><h2>SocialDaily</h2></Link>
-		</div>
-		
-		<div className="mid-area">
-             <div className="search-social">
-						<form method="post" className="">
-                        <BsSearch />
-							<input type="text" placeholder="Search Posts,People" />						
-						</form>
-		</div>
     
-        </div>
+    const color = "#65676b";
 
-        <div className='notification'>
-            <ul>
-           <li>
-           <BsFillHouseFill />
-           </li>
-           <li>
-            <BsFillChatLeftTextFill />
-           </li>
-           <li>
-            <BsBellFill />
-           </li>
-           </ul>
+  return (
+    <header>
+    <div className="header_left">
+      <Link to="/" className="header_logo">
+        <div className="circle">
+         <h3>SD</h3>
         </div>
-            
-        <div className='user-profile'>
-            <img src={userImage} alt="Profile" />
-        </div>
-	</div>
-
+      </Link>
+      <div className="search search1">
+        <Search color={color} />
+        <input
+          type="text"
+          placeholder="Search SocialDaily"
+          className="hide_input"
+        />
+      </div>
     </div>
-  )
+    <div className="header_middle">
+      <Link to="/" className="middle_icon active">
+        <HomeActive />
+      </Link>
+      <Link to="/" className="middle_icon hover1">
+        <Friends color={color} />
+      </Link>
+      <Link to="/" className="middle_icon hover1">
+        <Watch color={color} />
+        <div className="middle_notification">9+</div>
+      </Link>
+      <Link to="/" className="middle_icon hover1">
+        <Market color={color} />
+      </Link>
+      <Link to="/" className="middle_icon hover1">
+        <Gaming color={color} />
+      </Link>
+    </div>
+    <div className="header_right"></div>
+  </header>
+  );
 }

@@ -5,7 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import EmailVerify from './pages/emailVerify/EmailVerify';
 import ForgetPassword from './pages/forgetPassword/ForgetPassword';
 import ResetPassword from './pages/resetPassword/ResetPassword';
-import Home from './pages/home/Home';
+import Home from './pages/home';
 import NCSS from './assets/css/IncludeCss';
 
 function App() {
