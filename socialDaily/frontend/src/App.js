@@ -20,7 +20,6 @@ function App() {
   const darkTheme = false;
   const { data, isLoading} = useGetUserDataQuery();
 
-  
   return (
     <>
      <div className={darkTheme? 'dark' : ""}>

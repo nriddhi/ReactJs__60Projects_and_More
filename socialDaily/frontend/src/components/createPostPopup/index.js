@@ -40,7 +40,6 @@ export default function CreatePostPopup({
 
   const filteredOptions = options.filter((option) => option.value !== selectedOption.value);
 
-
   const dispatch = useDispatch()
   const popup = useRef(null);
   const [text, setText] = useState("");
@@ -154,7 +153,7 @@ export default function CreatePostPopup({
           </div>
           <span>Create Post</span>
         </div>
-        <div className="box_profile" >
+        <div className="box_profile">
           <img src={user?.user?.picture} alt="" className="box_profile_img" />
           <div className="box_col">
             <div className="box_profile_name">

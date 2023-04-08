@@ -18,84 +18,86 @@ import Intro from "../../components/intro";
 import { useMediaQuery } from "react-responsive";
 import CreatePostPopup from "../../components/createPostPopup";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import {useGetUserDataQuery} from "../../store/Apislice"
 import "react-loading-skeleton/dist/skeleton.css";
 import { HashLoader } from "react-spinners";
 export default function Profile({ getAllPosts }) {
+  const { data, isLoading} = useGetUserDataQuery();
   const [visible, setVisible] = useState(false);
   const { username } = useParams();
   const navigate = useNavigate();
   const { user } = useSelector((state) => ({ ...state }));
   const [photos, setPhotos] = useState({});
-  var userName = username === undefined ? user.username : username;
+  var userName = username === undefined ? data?.user?.username : username;
 
   const [{ loading, error, profile }, dispatch] = useReducer(profileReducer, {
     loading: false,
     profile: {},
     error: "",
   });
-  useEffect(() => {
-    getProfile();
-  }, [userName]);
+  // useEffect(() => {
+  //   getProfile();
+  // }, [userName]);
   useEffect(() => {
     setOthername(profile?.details?.otherName);
   }, [profile]);
 
-  var visitor = userName === user.username ? false : true;
+  var visitor = userName === data?.user?.username ? false : true;
   const [othername, setOthername] = useState();
   const path = `${userName}/*`;
   const max = 30;
   const sort = "desc";
 
-  const getProfile = async () => {
-    try {
-      dispatch({
-        type: "PROFILE_REQUEST",
-      });
-      const { data } = await axios.get(
-        `${process.env.REACT_APP_BACKEND_URL}/getProfile/${userName}`,
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        }
-      );
-      if (data.ok === false) {
-        navigate("/profile");
-      } else {
-        try {
-          const images = await axios.post(
-            `${process.env.REACT_APP_BACKEND_URL}/listImages`,
-            { path, sort, max },
-            {
-              headers: {
-                Authorization: `Bearer ${user.token}`,
-              },
-            }
-          );
-          setPhotos(images.data);
-        } catch (error) {
-          console.log(error);
-        }
-        dispatch({
-          type: "PROFILE_SUCCESS",
-          payload: data,
-        });
-      }
-    } catch (error) {
-      dispatch({
-        type: "PROFILE_ERROR",
-        payload: error.response.data.message,
-      });
-    }
-  };
+  // const getProfile = async () => {
+  //   try {
+  //     dispatch({
+  //       type: "PROFILE_REQUEST",
+  //     });
+  //     const { data } = await axios.get(
+  //       `${process.env.REACT_APP_BACKEND_URL}/getProfile/${userName}`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${user.token}`,
+  //         },
+  //       }
+  //     );
+  //     if (data.ok === false) {
+  //       navigate("/profile");
+  //     } else {
+  //       try {
+  //         const images = await axios.post(
+  //           `${process.env.REACT_APP_BACKEND_URL}/listImages`,
+  //           { path, sort, max },
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${user.token}`,
+  //             },
+  //           }
+  //         );
+  //         setPhotos(images.data);
+  //       } catch (error) {
+  //         console.log(error);
+  //       }
+  //       dispatch({
+  //         type: "PROFILE_SUCCESS",
+  //         payload: data,
+  //       });
+  //     }
+  //   } catch (error) {
+  //     dispatch({
+  //       type: "PROFILE_ERROR",
+  //       payload: error.response.data.message,
+  //     });
+  //   }
+  // };
   const profileTop = useRef(null);
   const leftSide = useRef(null);
   const [height, setHeight] = useState();
   const [leftHeight, setLeftHeight] = useState();
   const [scrollHeight, setScrollHeight] = useState();
   useEffect(() => {
-    setHeight(profileTop.current.clientHeight + 300);
-    setLeftHeight(leftSide.current.clientHeight);
+    setHeight(profileTop?.current?.clientHeight + 300);
+    setLeftHeight(leftSide?.current?.clientHeight);
     window.addEventListener("scroll", getScroll, { passive: true });
     return () => {
       window.addEventListener("scroll", getScroll, { passive: true });
@@ -107,6 +109,8 @@ export default function Profile({ getAllPosts }) {
   const getScroll = () => {
     setScrollHeight(window.pageYOffset);
   };
+
+  if(isLoading) return 'Loading...';
 
   return (
     <div className="profile">
@@ -281,7 +285,7 @@ export default function Profile({ getAllPosts }) {
                     />
                     <Photos
                       username={userName}
-                      token={user.token}
+                      token={data?.user?.token}
                       photos={photos}
                     />
                     <Friends friends={profile.friends} />
