@@ -14,6 +14,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 
 function Login(props) {
     const [loginData, {isError}] = useLoginUsersMutation();
+    const [submitting, setSubmitting] = useState(false);
     const oneTimeToken = useSelector((state) => state.persistedReducer.appSlice.token);
     const [userData, setUser] = useState('');
     const [validUser, setValidUser] = useState('');
@@ -71,6 +72,7 @@ function Login(props) {
     const handleSubmit = async (e) => {
         
         e.preventDefault();
+        setSubmitting(true);
     
         const v2 = PWD_REGEX.test(password);
 
@@ -86,7 +88,7 @@ function Login(props) {
         let response = loginData({userData, password});
 
         const value = await response;
-
+        if(value) { setSubmitting(false);}
         if(value?.data?.code==='l200'){
             setSuccess('Logged in successfully');
             dispatch(login());
@@ -180,7 +182,7 @@ function Login(props) {
                                             className="btn btn-primary btn-lg btn-block"
                                             type="submit"
                                             disabled={!validPwd}>
-                                            Login
+                                        {submitting? 'Logged In...' : 'Login'}
                                         </button>
                                         <div className="forgot-pass">
                                   <span className="helper-text">Forget Password? 

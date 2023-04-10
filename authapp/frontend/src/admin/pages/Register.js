@@ -14,6 +14,7 @@ const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 function Register(props) {
 
     let [userData, {isError, isLoading}] = useRegisterUsersMutation();
+    const [submitting, setSubmitting] = useState(false);
     const [name, setName] = useState('');
     const [username, setUser] = useState('');
     const [validUser, setValidUser] = useState('');
@@ -66,6 +67,7 @@ function Register(props) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitting(true);
         
 
         const v1 = USER_REGEX.test(username);
@@ -87,7 +89,7 @@ function Register(props) {
         });
 
          const value = await response;
-          console.log(value);
+         if(value) {  setSubmitting(false); }
            if(!value.error && value.data){
             setErrMsg('');
             setSucessMsg('success');
@@ -258,7 +260,7 @@ function Register(props) {
                                             className="btn btn-primary btn-lg btn-block"
                                             type="submit"
                                             disabled={!validUser || !validPwd || !validMatchPwd}>
-                                            Sign Up
+                                            {submitting? 'Signing Up...' : 'Sign Up'}
                                         </button>
                                         <div className="bottom">
                               <span className="helper-text">Already have an account?
