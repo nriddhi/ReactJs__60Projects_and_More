@@ -3,11 +3,28 @@ const Token = require('../models/mailToken');
 const sendEmail = require('../utils/sendEmail');
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
-const {getAdminUser} = require('./adminData');
-const {verifyToken, getUser, refreshToken, clearCookie,login, logout} = require("./AuthController");
+const {getAdminUser, updateProfile, addCat} = require('./adminData');
+const {verifyToken, getUser, refreshToken,login, logout} = require("./AuthController");
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
+const multer = require("multer");
+const path = require("path");
+const cloud = require('../utils/cloud');
+
+  
+  const upload = multer({
+  storage: multer.diskStorage({}),
+  fileFilter: (req, file, cb) => {
+    let ext = path.extname(file.originalname);  
+    if (ext !== ".jpg" && ext !== ".jpeg" && ext !== ".png") {
+      cb(new Error("File type is not supported"), false);
+      return;
+    }
+    cb(null, true);
+  },
+   });
+
 
   router.post('/register', async(req, res) => {
 
@@ -145,15 +162,12 @@ const crypto = require('crypto');
 
 }
 catch (err) { res.status(500).json(err) }
-  });
-
-const cookieMiddle = (req, res, next) => {
-  //res.hasecom_token = !!req.cookies.ecom_token
-  next();
-};
+ });
 
 
-router.get("/getuser", refreshToken, cookieMiddle, getAdminUser);
+router.get("/getuser", verifyToken, getAdminUser);
+router.post("/updateProfile", upload.single('profile'), updateProfile);
+router.post("/addCategories", addCat);
 router.get("/refresh", refreshToken, getUser);
 router.post("/login", login );
 router.post("/logout", logout);
@@ -238,5 +252,7 @@ router.post("/logout", logout);
     res.redirect(process.env.BASE_URL);
    
   });
+
+
 
 module.exports = router;

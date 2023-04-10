@@ -99,8 +99,8 @@ const bcrypt = require('bcrypt');
   };
 
   const verifyToken = (req, res, next) => {
-    const token = req.cookies;
-    console.log(token);
+    const token = req.cookies.ecom_token;
+  
     if (!token) {
       return res.status(404).json({ code:'lo400', message: "No token found" });
     }

@@ -12,7 +12,7 @@ import appSlice from './AppSlice';
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['ecomApi'],
+    blacklist: ['authApi'],
   };
 
   const reducers = combineReducers({appSlice });

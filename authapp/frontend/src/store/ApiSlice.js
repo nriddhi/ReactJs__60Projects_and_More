@@ -3,9 +3,9 @@ import {login, logout, onetimeTrue} from './AppSlice';
 
 export const apiSlice = createApi({
 
-    reducerPath: 'ecomApi',
+    reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5000'
+        baseUrl: process.env.API_URL
     }),
 
     endpoints: (builder) => ({
