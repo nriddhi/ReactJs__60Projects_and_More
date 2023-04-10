@@ -5,7 +5,7 @@ export const apiSlice = createApi({
 
     reducerPath: 'authApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: process.env.API_URL
+        baseUrl: process.env.REACT_APP_API_URL
     }),
 
     endpoints: (builder) => ({
