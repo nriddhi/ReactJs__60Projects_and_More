@@ -1,340 +1,208 @@
-import './App.css';
-import {  Modal } from 'reactstrap'
-import { Fragment, useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { FiEdit, FiTrash2 } from 'react-icons/fi';
-import { useCreateDataMutation, useEditDataMutation, useGetDataQuery } from './store/ApiSlice';
-import FormData from 'form-data';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import './App2.css';
 
+const CrudApp = () => {
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalMode, setModalMode] = useState('add');
+  const [formData, setFormData] = useState({
+    id: '',
+    name: '',
+    email: '',
+    phone: '',
+  });
 
-function App() {
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await axios.get('https://jsonplaceholder.typicode.com/users');
+      setData(result.data.map((item) => ({ ...item, selected: false })));
+    };
 
-  const [userData, {isError}] = useCreateDataMutation();
-  const {data, isLoading, isFetching} = useGetDataQuery();
-  const [editData, {isLoading:loadData}]  = useEditDataMutation();
-  
-  const [modal, setModal] = useState(false);
-  const [emodal, seteModal] = useState(false);
-  const [editResData, setEditResData] = useState('');
+    fetchData();
+  }, []);
 
-  const [id, setId] = useState('');
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
-  const [mobile, setMobile] = useState('');
-
-    const [currentPage, setcurrentPage] = useState(1);
-    const [itemsPerPage, setitemsPerPage] = useState(5);
-  
-    const [pageNumberLimit, setpageNumberLimit] = useState(5);
-    const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
-    const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
-
-    
-    if(isLoading || loadData || isFetching ) return 'Loading...';
-
-  
-
-  const toggle = () => { 
-    setId(''); 
-    setName('');
-    setAddress('');
-    setEmail('');
-    setMobile('');
-   setModal(!modal);
-  }
-
-  const etoggle = async(e, id) => { 
-    e.preventDefault();
-    if(id!==undefined) {
-      const editRes = await fetch('http://localhost:5000/api/edit/' + id, {method: 'PATCH'})
-      .then((response) => response.json())
-      .then((json) => {
-        setId(json? json._id: '');
-        setName(json? json.name: '');
-        setEmail(json? json.email: '');
-        setAddress(json? json.address: '');
-        setMobile(json? json.mobile: '');
-
-      });
-    }
-    seteModal(!emodal);
-  }
-
-  const handleSubmit = (e) => {
-
-    e.preventDefault();
-
-    const formdata = new FormData();
-
-    formdata.append('name', name);
-    formdata.append('email', email);
-    formdata.append('address', address);
-    formdata.append('mobile', mobile);
-
-
-    const response = userData({
-      name, email, address, mobile
-    });
-
-
-  }
-
-  const handleUpdate = async(e) => {
-
-    e.preventDefault();
-
-    const formdata = new FormData();
-    
-    formdata.append('id', id);
-    formdata.append('name', name);
-    formdata.append('email', email);
-    formdata.append('address', address);
-    formdata.append('mobile', mobile);
-
-    await fetch('http://localhost:5000/api/edit/' + id, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-    id:id, name:name, email, address, mobile 
-    }),
-})
-
-    
-
-  }
-
-
-  /* Pagination */
-
-  const handleClick = (event) => {
-    setcurrentPage(Number(event.target.id));
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
-const pages = [];
+  const handleModalOpen = (mode, item) => {
+    setModalMode(mode);
+    if (mode === 'edit') {
+      setFormData(item);
+    } else {
+      setFormData({
+        id: '',
+        name: '',
+        email: '',
+        phone: '',
+      });
+    }
+    setModalIsOpen(true);
+  };
 
-if( data.length > 0 || data !=='undefined') {  
-for (let i = 1; i <= Math.ceil(data.length / itemsPerPage); i++) {
-  pages.push(i);
-}
-}
+  const handleModalClose = () => {
+    setModalIsOpen(false);
+  };
 
-const indexOfLastItem = currentPage * itemsPerPage;
-const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (modalMode === 'add') {
+      setData((prevData) => [
+        ...prevData,
+        {
+          ...formData,
+          id: prevData.length + 1,
+          selected: false,
+        },
+      ]);
+    } else {
+      setData((prevData) =>
+        prevData.map((item) =>
+          item.id === formData.id ? { ...formData, selected: item.selected } : item
+        )
+      );
+    }
+    setModalIsOpen(false);
+  };
 
-const renderPageNumbers = pages.map((number) => {
-  if (number < maxPageNumberLimit + 1 && number > minPageNumberLimit) {
-    return (
-      <li className={currentPage == number ? "active" : 'page-item'}>
-        <a key={number}
-        id={number} className='page-link' onClick={handleClick}>{number}</a>
-      </li>
+  const handleSelect = (id) => {
+    setData((prevData) =>
+      prevData.map((item) =>
+        item.id === id ? { ...item, selected: !item.selected } : item
+      )
     );
-  } else {
-    return null;
-  }
-});
+  };
 
-const handleNextbtn = () => {
-  setcurrentPage(currentPage + 1);
+  const handleSelectAll = (e) => {
+    const { checked } = e.target;
+    setData((prevData) =>
+      prevData.map((item) => ({
+        ...item,
+        selected: checked,
+      }))
+    );
+  };
 
-  if (currentPage + 1 > maxPageNumberLimit) {
-    setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
-    setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
-  }
-};
+  const handleDelete = () => {
+    setData((prevData) => prevData.filter((item) => !item.selected));
+  };
 
-const handlePrevbtn = () => {
-  setcurrentPage(currentPage - 1);
-
-  if ((currentPage - 1) % pageNumberLimit == 0) {
-    setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
-    setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
-  }
-};
-
-let pageIncrementBtn = null;
-if (pages.length > maxPageNumberLimit) {
-  pageIncrementBtn = <li onClick={handleNextbtn}> &hellip; </li>;
-}
-
-let pageDecrementBtn = null;
-if (minPageNumberLimit >= 1) {
-  pageDecrementBtn = <li onClick={handlePrevbtn}> &hellip; </li>;
-}
-
-const handleLoadMore = () => {
-  setitemsPerPage(itemsPerPage + 2);
-};
-  
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
   return (
-    <Fragment>
-    <div className="container-xl">
-    <div className="table-responsive">
-      <div className="table-wrapper">
-        <div className="table-title">
-          <div className="row">
-            <div className="col-sm-6">
-              <h2>Manage <b>Employees</b></h2>
-            </div>
-            <div className="col-sm-6">
-              <div className="btn btn-success"  onClick={toggle}> <span>Add New Employee</span></div>
-              <div className="btn btn-danger"><span> Delete </span></div>						
-            </div>
-          </div>
-        </div>
-        <table className="table table-striped table-hover">
-          <thead>
-            <tr>
-              <th>
-                <span className="custom-checkbox">
-                  <input type="checkbox" id="selectAll" />
-                  <label htmlFor="selectAll"></label>
-                </span>
-              </th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Address</th>
-              <th>Phone</th>
-              <th>Actions</th>
-            </tr>
+    <div>
+      <h1>User Data</h1>
+      <button onClick={() => handleModalOpen('add', null)}>Add User</button>
+      <button onClick={handleDelete}>Delete Selected</button>
+      <table>
+        <thead>
+          <tr>
+            <th>
+              <input
+                type="checkbox"
+                checked={data.every((item) => item.selected)}
+                onChange={handleSelectAll}
+              />
+            </th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
           </thead>
-          <tbody>	
-  
-    { currentItems ? currentItems.map((values) => (	
-    
-    <tr key={values._id}>
-      <td>
-        <span className="custom-checkbox">
-          <input type="checkbox" id="checkbox5" name="options[]" value="1" />
-          <label htmlFor="checkbox5"></label>
-        </span>
-      </td>
-      <td>{values.name}</td>
-      <td>{values.email}</td>
-      <td>{values.address}</td>
-      <td>{values.mobile}</td>
-      <td>
-        <div onClick={(e) => etoggle(e, values._id)} className="edit" ><FiEdit></FiEdit></div>
-        <a href={`delete/${values._id}`} className="delete"><FiTrash2></FiTrash2></a>
-      </td>
-    </tr> 
-    ))
-    : <tr><td>No Data Available</td></tr>
-  }
-  
-          </tbody>
-        </table>
-
-        <div className="clearfix">
-        <div className="hint-text">Showing <b>{indexOfLastItem}</b> out of <b>{data.length}</b> entries</div>
-        <ul className="pagination">
-          <li className="page-item">
+        <tbody>
+          {currentItems.map((item) => (
+            <tr key={item.id}>
+              <td>
+                <input
+                  type="checkbox"
+                  checked={item.selected}
+                  onChange={() => handleSelect(item.id)}
+                />
+              </td>
+              <td>{item.id}</td>
+              <td>{item.name}</td>
+              <td>{item.email}</td>
+              <td>{item.phone}</td>
+              <td>
+                <button onClick={() => handleModalOpen('edit', item)}>Edit</button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <div>
+        {data.length > itemsPerPage && (
+          <div>
             <button
-              onClick={handlePrevbtn}
-              disabled={currentPage == pages[0] ? true : false}
+              disabled={currentPage === 1}
+              onClick={() => handlePageChange(currentPage - 1)}
             >
-              Previous
+              Prev
             </button>
-          </li>
-          {pageDecrementBtn}
-          {renderPageNumbers}
-          {pageIncrementBtn}
-  
-          <li>
+            {Array.from({ length: Math.ceil(data.length / itemsPerPage) }, (_, i) => (
+              <button
+                key={i}
+                disabled={currentPage === i + 1}
+                onClick={() => handlePageChange(i + 1)}
+              >
+                {i + 1}
+              </button>
+            ))}
             <button
-              onClick={handleNextbtn}
-              disabled={currentPage == pages[pages.length - 1] ? true : false}
+              disabled={currentPage === Math.ceil(data.length / itemsPerPage)}
+              onClick={() => handlePageChange(currentPage + 1)}
             >
               Next
             </button>
-          </li>
-        </ul>
-        </div>
+          </div>
+        )}
       </div>
-    </div>        
-  </div>
-
-  <Modal isOpen={modal} toggle={toggle} >
-  <div>
-		<div className="modal-content">
-			<form>
-				<div className="modal-header">						
-					<h4 className="modal-title">Add Employee</h4>
-					<button type="button" className="close" onClick={toggle}>&times;</button>
-				</div>
-				<div className="modal-body">					
-					<div className="form-group">
-						<label>Name</label>
-						<input type="text" name='name' value={name} onChange={(e) => setName(e.target.value)} className="form-control" required />
-					</div>
-					<div className="form-group">
-						<label>Email</label>
-						<input type="email" name='email' value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" required />
-					</div>
-					<div className="form-group">
-						<label>Address</label>
-						<textarea name='address' value={address} onChange={(e) => setAddress(e.target.value)} className="form-control" required></textarea>
-					</div>
-					<div className="form-group">
-						<label>Phone</label>
-						<input type="text" name='phone' value={mobile} onChange={(e) => setMobile(e.target.value)} className="form-control" required />
-					</div>					
-				</div>
-				<div className="modal-footer">
-					<input type="button" className="btn btn-default" value="Cancel" onClick={toggle} />
-					<input type="submit" className="btn btn-success" value="Add" onClick={handleSubmit} />
-				</div>
-			</form>
-		
-	</div>
-</div>
-  </Modal>
-
-  <Modal isOpen={emodal} toggle={etoggle} >
-  <div>
-		<div className="modal-content">
-			<form onSubmit={handleUpdate}>
-				<div className="modal-header">						
-					<h4 className="modal-title">Add Employee</h4>
-					<button type="button" className="close" onClick={etoggle}>&times;</button>
-				</div>
-				<div className="modal-body">	
-
-        <input type="hidden" name='id'  defaultValue={editResData.data? editResData.data._id : id} onChange={(e) => setId(e.target.value)} className="form-control"/>			
-
-					<div className="form-group">
-						<label>Name</label>
-						<input type="text" name='name'  defaultValue={editResData.data? editResData.data.name : name} onChange={(e) => setName(e.target.value)} className="form-control" required />
-					</div>
-					<div className="form-group">
-						<label>Email</label>
-						<input type="email" name='email' defaultValue={editResData.data? editResData.data.email : email} onChange={(e) => setEmail(e.target.value)} className="form-control" required />
-					</div>
-					<div className="form-group">
-						<label>Address</label>
-						<textarea name='address' defaultValue={editResData.data? editResData.data.address : address} onChange={(e) => setAddress(e.target.value)} className="form-control" required></textarea>
-					</div>
-					<div className="form-group">
-						<label>Phone</label>
-						<input type="text" name='phone' defaultValue={editResData.data? editResData.data.mobile : mobile} onChange={(e) => setMobile(e.target.value)} className="form-control" required />
-					</div>					
-				</div>
-				<div className="modal-footer">
-					<input type="button" className="btn btn-default" value="Cancel" onClick={etoggle} />
-					<input type="submit" className="btn btn-success" value="Update" />
-				</div>
-			</form>
-		
-	</div>
-</div>
-  </Modal>
- 
-  </Fragment>
+      {modalIsOpen && (
+        <div className='modal-content'>
+          <div onClick={handleModalClose} style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }} />
+          <div className='body'>
+            <h2>{modalMode === 'add' ? 'Add User' : 'Edit User'}</h2>
+            <form onSubmit={handleSubmit}>
+              <div>
+                <label>ID:</label>
+                <input type="text" name="id" value={formData.id} onChange={handleInputChange} />
+              </div>
+              <div>
+                <label>Name:</label>
+                <input type="text" name="name" value={formData.name} onChange={handleInputChange} />
+              </div>
+              <div>
+                <label>Email:</label>
+                <input type="text" name="email" value={formData.email} onChange={handleInputChange} />
+              </div>
+              <div>
+                <label>Phone:</label>
+                <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} />
+              </div>
+              <button type="submit">{modalMode === 'add' ? 'Add' : 'Save'}</button>
+              <button onClick={handleModalClose}>Cancel</button>
+            </form>
+           
+          </div>
+        </div>
+      )}
+    </div>
   );
-}
+};
 
-export default App;
+export default CrudApp;
