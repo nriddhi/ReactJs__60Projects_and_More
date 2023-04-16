@@ -1,6 +1,7 @@
 {
   "name": "blog-frontend",
   "version": "0.1.0",
+  "homepage" : "https://www.nayeemriddhi.info/blogapp",
   "private": true,
   "dependencies": {
     "@craco/craco": "^6.2.0",

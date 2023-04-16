@@ -1,3 +1,3 @@
-const baseUrl = "http://localhost:5000";
+const baseUrl = "https://blogapp-nayeemriddhi.up.railway.app";
 
 export default baseUrl;

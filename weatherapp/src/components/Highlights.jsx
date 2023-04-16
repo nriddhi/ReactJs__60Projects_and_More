@@ -23,7 +23,7 @@ function Highlights() {
       <div className="highlight-container">
         <Card className="h-card">
           <div className="h-title">Humidity</div>
-          <img src="/weather_icons/humidity.png" width={100} alt="" />
+          <img src={process.env.PUBLIC_URL +"/weather_icons/humidity.png"} width={100} alt="" />
           <div className="hl-value">
             <h1>{current.humidity}</h1>
             <span>%</span>
@@ -32,7 +32,7 @@ function Highlights() {
         <Card className="h-card">
           <div className="h-title">Wind Speed</div>
           <img
-            src={`/weather_icons/wind-${isDark ? "night" : "day"}.png`}
+            src={process.env.PUBLIC_URL +`/weather_icons/wind-${isDark ? "night" : "day"}.png`}
             width={100}
             alt="wind icon"
           />
@@ -43,14 +43,14 @@ function Highlights() {
         </Card>
         <Card className="h-card sun">
           <div className="sun-info">
-            <img src="/weather_icons/sunrise.png" width={50} alt="" />
+            <img src={process.env.PUBLIC_URL +"/weather_icons/sunrise.png"} width={50} alt="" />
             <div>
               {formatter.format(new Date(current.sunrise * 1000))}
               <span>Sunrise</span>
             </div>
           </div>
           <div className="sun-info">
-            <img src="/weather_icons/sunset.png" width={50} alt="" />
+            <img src={process.env.PUBLIC_URL +"/weather_icons/sunset.png"} width={50} alt="" />
             <div>
               {formatter.format(new Date(current.sunset * 1000))}
               <span>Sunset</span>
@@ -59,7 +59,7 @@ function Highlights() {
         </Card>
         <Card className="h-card">
           <div className="h-title">Clouds</div>
-          <img src="/weather_icons/clouds.png" width={100} alt="" />
+          <img src={process.env.PUBLIC_URL +"/weather_icons/clouds.png"} width={100} alt="" />
 
           <div className="hl-value">
             <h1> {current.clouds}</h1>
@@ -68,12 +68,12 @@ function Highlights() {
         </Card>
         <Card className="h-card">
           <div className="h-title">UV Index</div>
-          <img src="/weather_icons/uv.png" width={100} alt="" />
+          <img src={process.env.PUBLIC_URL +"/weather_icons/uv.png"} width={100} alt="" />
           <h1>{current.uvi}</h1>
         </Card>
         <Card className="h-card">
           <div className="h-title">Pressure</div>
-          <img src="/weather_icons/pressure.png" width={100} alt="" />
+          <img src={process.env.PUBLIC_URL +"/weather_icons/pressure.png"} width={100} alt="" />
 
           <div className="hl-value">
             <h1>{current.pressure}</h1>

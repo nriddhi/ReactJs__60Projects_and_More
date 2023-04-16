@@ -25,7 +25,7 @@ import ResetPassword from "./components/Users/PasswordManagement/ResetPassword";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/blogapp">
       <Navbar />
       <Switch>
         <AdminRoute

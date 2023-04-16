@@ -30,7 +30,7 @@ function Weather() {
       <div
         className="weather-icon"
         style={{
-          background: `url(/weather_icons/${current.weather[0].icon}.png)`,
+          background: `url(${process.env.PUBLIC_URL}/weather_icons/${current.weather[0].icon}.png)`,
         }}
       ></div>
       <h2 className="temp">

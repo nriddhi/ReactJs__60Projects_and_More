@@ -23,7 +23,7 @@ function Forecast() {
           <Card key={index} className="forecast-card">
             <div className="forecast-day">{dayFormatter.format(date)}</div>
             <img
-              src={`/weather_icons/${weather.weather[0].icon}.png`}
+              src={process.env.PUBLIC_URL +`/weather_icons/${weather.weather[0].icon}.png`}
               alt="icon"
               width={100}
             />

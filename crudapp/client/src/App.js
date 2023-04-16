@@ -15,7 +15,7 @@ const CrudApp = () => {
   });
   const[msg, setMsg] = useState('');
   const[errmsg, setErrmsg] = useState('');
-  const API_URL = 'http://localhost:5000';
+  const API_URL = 'https://crudapp-nayeemriddhi.up.railway.app';
 
   useEffect(() => {
     const fetchData = async () => {
