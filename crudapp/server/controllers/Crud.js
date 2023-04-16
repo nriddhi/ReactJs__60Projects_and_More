@@ -5,18 +5,17 @@ export const createData = async(req, res) => {
     try {
 
         const email = await userData.findOne({ email: req.body.email });
-        if(email) return res.status(400).json({code:'me400',msg:'Email Already Exists'});
+        if(email) return res.status(400).json({code:'me400',msg:'Email already exists'});
 
           const data = new userData({
             name : req.body.name,
             email : req.body.email,
-            address : req.body.address,
             mobile : req.body.mobile
           });
 
           const user = await data.save();
      
-          return res.status(200).json({msg:"Employee saved successfully"})
+          return res.status(200).json({msg:"User saved successfully"})
 
     }
     catch (err) {
@@ -40,8 +39,6 @@ export const getData = async(req, res) => {
 }
 
 export const editData = async(req, res) => {
-
-    console.log(req.body, req.params.id);
     
     try {
         const Data = await userData.findById(req.params.id);
@@ -50,9 +47,19 @@ export const editData = async(req, res) => {
             req.body,
             { new: true }
           );
-        return res.json(updateData);
+        return res.status(200).json({msg: 'Data updated successfully'});
  }
  catch(err) {
      return res.status(500).json(err);
  }
 }
+
+export const deleteData = async(req, res) => {
+    const ids = req.body.ids;
+    try {
+      const result = await userData.deleteMany({ _id: { $in: ids } });
+      res.send(result);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  };

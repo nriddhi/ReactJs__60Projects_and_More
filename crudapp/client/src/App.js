@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App2.css';
+import './App.css';
 
 const CrudApp = () => {
   const [data, setData] = useState([]);
@@ -9,15 +9,17 @@ const CrudApp = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalMode, setModalMode] = useState('add');
   const [formData, setFormData] = useState({
-    id: '',
     name: '',
     email: '',
-    phone: '',
+    mobile: '',
   });
+  const[msg, setMsg] = useState('');
+  const[errmsg, setErrmsg] = useState('');
+  const API_URL = 'http://localhost:5000';
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get('https://jsonplaceholder.typicode.com/users');
+      const result = await axios.get(`${API_URL}/api/getData`);
       setData(result.data.map((item) => ({ ...item, selected: false })));
     };
 
@@ -29,15 +31,16 @@ const CrudApp = () => {
   };
 
   const handleModalOpen = (mode, item) => {
+    setMsg('');
+    setErrmsg('');
     setModalMode(mode);
     if (mode === 'edit') {
       setFormData(item);
     } else {
       setFormData({
-        id: '',
         name: '',
         email: '',
-        phone: '',
+        mobile: '',
       });
     }
     setModalIsOpen(true);
@@ -48,6 +51,8 @@ const CrudApp = () => {
   };
 
   const handleInputChange = (e) => {
+    setMsg('');
+    setErrmsg('');
     const { name, value } = e.target;
     setFormData((prevData) => ({
       ...prevData,
@@ -58,31 +63,31 @@ const CrudApp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (modalMode === 'add') {
-      setData((prevData) => [
-        ...prevData,
-        {
-          ...formData,
-          id: prevData.length + 1,
-          selected: false,
-        },
-      ]);
+      axios.post(`${API_URL}/api/create`, formData)
+      .then(function (response) {
+        setMsg(response.data.msg);
+      })
+      .catch(function (error) {
+        setErrmsg(error.response.data.msg);
+      });
     } else {
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.id === formData.id ? { ...formData, selected: item.selected } : item
-        )
-      );
+      axios.patch(`${API_URL}/api/edit/${formData._id}`, formData)
+      .then(function (response) {
+        setMsg(response.data.msg);
+      })
+      .catch(function (error) {
+        setErrmsg(error.response.data.msg);
+      });
     }
-    setModalIsOpen(false);
+    //setModalIsOpen(false);
   };
 
   const handleSelect = (id) => {
-    setData((prevData) =>
-      prevData.map((item) =>
-        item.id === id ? { ...item, selected: !item.selected } : item
-      )
-    );
-  };
+    setData(prevData => prevData.map(item => ({
+      ...item,
+      selected: item._id === id ? !item.selected : item.selected,
+    })));
+  }
 
   const handleSelectAll = (e) => {
     const { checked } = e.target;
@@ -94,9 +99,22 @@ const CrudApp = () => {
     );
   };
 
-  const handleDelete = () => {
-    setData((prevData) => prevData.filter((item) => !item.selected));
-  };
+  const handleDeleteSelected = () => {
+    const message = `Are you sure to delete?`;
+    if(window.confirm(message)) {
+    const idsToDelete = data
+      .filter(item => item.selected)
+      .map(item => item._id);
+    axios.delete(`${API_URL}/api/delete`, { data: { ids: idsToDelete } })
+      .then(response => {
+        // Handle success
+        window.location.reload();
+      })
+      .catch(error => {
+        // Handle error
+      });
+    }
+  }
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -104,9 +122,9 @@ const CrudApp = () => {
 
   return (
     <div>
-      <h1>User Data</h1>
+      <h1>User Data Management</h1>
       <button onClick={() => handleModalOpen('add', null)}>Add User</button>
-      <button onClick={handleDelete}>Delete Selected</button>
+      <button onClick={handleDeleteSelected}>Delete Selected</button>
       <table>
         <thead>
           <tr>
@@ -117,27 +135,25 @@ const CrudApp = () => {
                 onChange={handleSelectAll}
               />
             </th>
-            <th>ID</th>
             <th>Name</th>
             <th>Email</th>
-            <th>Phone</th>
+            <th>mobile</th>
             <th>Actions</th>
           </tr>
           </thead>
         <tbody>
           {currentItems.map((item) => (
-            <tr key={item.id}>
+            <tr key={item._id}>
               <td>
                 <input
                   type="checkbox"
                   checked={item.selected}
-                  onChange={() => handleSelect(item.id)}
+                  onChange={() => handleSelect(item._id)}
                 />
               </td>
-              <td>{item.id}</td>
               <td>{item.name}</td>
               <td>{item.email}</td>
-              <td>{item.phone}</td>
+              <td>{item.mobile}</td>
               <td>
                 <button onClick={() => handleModalOpen('edit', item)}>Edit</button>
               </td>
@@ -177,10 +193,11 @@ const CrudApp = () => {
           <div onClick={handleModalClose} style={{ position: 'fixed', top: 0, bottom: 0, left: 0, right: 0 }} />
           <div className='body'>
             <h2>{modalMode === 'add' ? 'Add User' : 'Edit User'}</h2>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label>ID:</label>
-                <input type="text" name="id" value={formData.id} onChange={handleInputChange} />
+            {msg ? <h4 className='msg'>{msg}</h4> : ''}
+            {errmsg ? <h4 className='errmsg'>{errmsg}</h4> : ''}
+            <form onSubmit={handleSubmit}>            
+            <div>
+                <input type="hidden" name="_id" value={formData._id} onChange={handleInputChange} />
               </div>
               <div>
                 <label>Name:</label>
@@ -188,11 +205,14 @@ const CrudApp = () => {
               </div>
               <div>
                 <label>Email:</label>
+                {modalMode === 'add' ?
                 <input type="text" name="email" value={formData.email} onChange={handleInputChange} />
+                :<input type="text" name="email" value={formData.email} onChange={handleInputChange} disabled />
+                }
               </div>
               <div>
-                <label>Phone:</label>
-                <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} />
+                <label>mobile:</label>
+                <input type="text" name="mobile" value={formData.mobile} onChange={handleInputChange} />
               </div>
               <button type="submit">{modalMode === 'add' ? 'Add' : 'Save'}</button>
               <button onClick={handleModalClose}>Cancel</button>

@@ -13,11 +13,6 @@ const DataSchema = new mongoose.Schema({
         unique: true,
     },
 
-    address : {
-        type: String,
-        required:true,
-    },
-
     mobile : {
         type: String,
         required:true,
@@ -28,6 +23,6 @@ const DataSchema = new mongoose.Schema({
  {timestamps:true}
 );
 
-export default mongoose.model('employees', DataSchema);
+export default mongoose.model('Users', DataSchema);
 
 
