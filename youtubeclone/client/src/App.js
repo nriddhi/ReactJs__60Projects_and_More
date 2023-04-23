@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Axios from "axios";
+import './App.css';
 import styled, { ThemeProvider } from "styled-components";
 import Menu from "./components/Menu";
 import Navbar from "./components/Navbar";
@@ -10,6 +12,8 @@ import SignIn from "./pages/SignIn";
 import Search from "./pages/Search";
 import { useSelector } from "react-redux";
 
+Axios.defaults.baseURL = "http://localhost:8800/api"
+
 const Container = styled.div`
   display: flex;
 `;
@@ -19,7 +23,8 @@ const Main = styled.div`
   background-color: ${({ theme }) => theme.bg};
 `;
 const Wrapper = styled.div`
-  padding: 22px 96px;
+padding-left: 35px;
+padding-top: 25px; 
 `;
 
 function App() {
@@ -44,9 +49,9 @@ function App() {
                     path="signin"
                     element={currentUser ? <Home /> : <SignIn />}
                   />
-                  <Route path="video">
-                    <Route path=":id" element={<Video />} />
-                  </Route>
+
+                    <Route path="/video/:id" element={<Video type='load' />} />
+                
                 </Route>
               </Routes>
             </Wrapper>

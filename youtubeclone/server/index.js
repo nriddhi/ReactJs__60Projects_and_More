@@ -1,54 +1,55 @@
-const express = require('express');
-const dotenv = require('dotenv').config();
-const mongoose = require('mongoose');
-const userRoutes = require('./routes/Users.js');
-const videoRoutes = require('./routes/Videos.js');
-const commentRoutes = require('./routes/Comments.js');
-const session = require('express-session');
-const authRoutes = require('./routes/Auth.js');
-const passport = require('passport');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
-const passportSetup = require('./Passport.js');
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import cors from "cors";
+import userRoutes from "./routes/users.js";
+import videoRoutes from "./routes/videos.js";
+import commentRoutes from "./routes/comments.js";
+import authRoutes from "./routes/auth.js";
+import cookieParser from "cookie-parser";
+
 
 const app = express();
-const port = 8000 || process.env.PORT;
+dotenv.config();
 
+const port = process.env.PORT || 5000;
+
+const connect = () => {
+  mongoose
+    .connect(process.env.MONGO_URL)
+    .then(() => {
+      console.log("Connected to DB");
+    })
+    .catch((err) => {
+      throw err;
+    });
+};
+
+//middlewares
+app.use(cookieParser())
 app.use(cors({
-   origin: true, //included origin as true
-   credentials: true, //included credentials as true
+  origin: true, //included origin as true
+  credentials: true, //included credentials as true
 }
 ));
-app.use(cookieParser());
-app.use(session({
-   secret: 'keyboard cat',
-   resave: false,
-   saveUninitialized: false,
- }));
-
-app.use(cors({
-   origin: true, //included origin as true
-   credentials: true, //included credentials as true
-}
-));
-
 app.use(express.json());
-app.use(cookieParser());
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/videos", videoRoutes);
+app.use("/api/comments", commentRoutes);
 
-app.use(passport.initialize());
-app.use(passport.authenticate('session'));
-
-
-app.use('/api/users', userRoutes);
-app.use('/api/videos', videoRoutes);
-app.use('/api/comments', commentRoutes);
-app.use('/api/auth', authRoutes);
-
-mongoose.set("strictQuery", false);
-mongoose.connect(process.env.MONGO_URL)
-.then(console.log('MongoDB Connected'))
-.catch((err) => console.log(err));
+//error handler
+app.use((err, req, res, next) => {
+  const status = err.status || 500;
+  const message = err.message || "Something went wrong!";
+  return res.status(status).json({
+    success: false,
+    status,
+    message,
+  });
+});
 
 app.listen(port, () => {
-   console.log('Connected to port ' + port);
+  connect();
+  console.log("Connected to Server");
 });

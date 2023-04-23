@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import {format} from "timeago.js";
 
 const Container = styled.div`
   width: ${(props) => props.type !== "sm" && "360px"};
@@ -12,7 +13,7 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-  width: 100%;
+  width: 92%;
   height: ${(props) => (props.type === "sm" ? "120px" : "202px")};
   background-color: #999;
   flex: 1;
@@ -60,11 +61,13 @@ const Card = ({ type, video }) => {
       const res = await axios.get(`/users/find/${video.userId}`);
       setChannel(res.data);
     };
+    console.log(channel);
     fetchChannel();
   }, [video.userId]);
 
   return (
-    <Link to={`/video/${video._id}`} style={{ textDecoration: "none" }}>
+    <div className="video-block">
+    <Link to={`/video/${video._id}`} style={{ textDecoration: "none", width:'350px' }}>
       <Container type={type}>
         <Image
           type={type}
@@ -78,13 +81,12 @@ const Card = ({ type, video }) => {
           <Texts>
             <Title>{video.title}</Title>
             <ChannelName>{channel.name}</ChannelName>
-            <Info>{video.views} views • 
-            {/* {format(video.createdAt)} */}
-            </Info>
+            <Info>{video.views} views • {format(video.createdAt)}</Info>
           </Texts>
         </Details>
       </Container>
     </Link>
+    </div>
   );
 };
 

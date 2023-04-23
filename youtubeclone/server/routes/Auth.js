@@ -1,39 +1,18 @@
-const express = require('express');
-const passport = require('passport');
-const jwt = require("jsonwebtoken");
-const { signup, signin } = require('../controllers/Auth.js');
+import express from "express";
+import { googleAuth, signin, signup, logout } from "../controllers/auth.js";
 
 const router = express.Router();
 
-router.post('/signup', signup);
-router.post('/signin', signin);
+//CREATE A USER
+router.post("/signup", signup)
 
-router.get('/google',
-passport.authenticate('google', { scope: ['email', 'profile'] }));
+//SIGN IN
+router.post("/signin", signin)
 
-router.get('/google/callback', passport.authenticate('google', {
-failureRedirect: "/",
-  }), function(req,res){
+//Sign Out
+router.post("/logout", logout)
 
-    const accessToken = jwt.sign({
-      uId : req.user._id
-   }, process.env.JWT_SECRET, {
-     expiresIn: "3500s",
-   });
+//GOOGLE AUTH
+router.post("/google", googleAuth)
 
-   if (req.cookies['vtube_token']) {
-     req.cookies['vtube_token'] = "";
-   }
-   
-   res.cookie('vtube_token', accessToken, {
-     path: "/",
-     httpOnly: true,
-     sameSite: "lax",
-   });
-    
-    res.redirect(process.env.BASE_URL);
-
-  });
-
-
-module.exports = router;
+export default router;

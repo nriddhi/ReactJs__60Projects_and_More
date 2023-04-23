@@ -22,6 +22,7 @@ import { useSelector } from "react-redux";
 const Container = styled.div`
   flex: 1;
   background-color: ${({ theme }) => theme.bgLighter};
+  height: 100%;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;
@@ -90,7 +91,7 @@ const Menu = ({ darkMode, setDarkMode }) => {
         <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Logo>
             <Img src={LamaTube} />
-            LamaTube
+            VideoTube
           </Logo>
         </Link>
         <Item>
@@ -136,7 +137,7 @@ const Menu = ({ darkMode, setDarkMode }) => {
             <Hr />
           </>
         }
-        <Title>BEST OF LAMATUBE</Title>
+        <Title>BEST OF VIDEOTUBE</Title>
         <Item>
           <LibraryMusicOutlinedIcon />
           Music

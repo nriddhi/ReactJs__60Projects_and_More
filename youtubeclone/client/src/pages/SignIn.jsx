@@ -1,13 +1,11 @@
 import axios from "axios";
 import React, { useState } from "react";
-import { ToastContainer, toast } from 'react-toastify';
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { loginFailure, loginStart, loginSuccess } from "../store/Userslice";
+import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
+import { auth, provider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-
-const serverURL = 'http://localhost:8000';
-
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -73,69 +71,64 @@ const Link = styled.span`
 const SignIn = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [msg, setMsg] = useState("");
+  const [errmsg, setErrmsg] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate()
 
   const handleLogin = async (e) => {
     e.preventDefault();
-   // dispatch(loginStart());
+    dispatch(loginStart());
     try {
-      const res = await axios.post(serverURL+'/api/auth/signin', { name, password }
-      , {credentials: 'include', withCredentials: true});
+      const res = await axios.post("/auth/signin", { name, password }, {withCredentials: true});
       dispatch(loginSuccess(res.data));
       navigate("/")
     } catch (err) {
       dispatch(loginFailure());
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/auth/signup", { name, email, password });
+      setErrmsg('');
+      setMsg('Signup successful');      
+    } catch (err) {
+      setMsg('');
+      setErrmsg(err.response.data.err);
     }
   };
 
   const signInWithGoogle = async () => {
-
-    window.open('http://localhost:8000/api/auth/google', "_self");
-
-    try {
-      const res = await axios.get(serverURL+'/api/auth/google/callback');
-      dispatch(loginSuccess(res.data));
-      navigate("/")
-    } catch (err) {
-      dispatch(loginFailure());
-    }
-    
+    dispatch(loginStart());
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        axios
+          .post("/auth/google", {
+            name: result.user.displayName,
+            email: result.user.email,
+            img: result.user.photoURL,
+          }, { withCredentials: true })
+          .then((res) => {
+            console.log(res)
+            dispatch(loginSuccess(res.data));
+            navigate("/")
+          });
+      })
+      .catch((error) => {
+        dispatch(loginFailure());
+      });
   };
 
-  const handleSignUp = async(e) => {
-
-    e.preventDefault();
-
-    try {
-
-      axios({
-        method: 'post',
-        url: serverURL+'/api/auth/signup',
-        data: {
-          username: name,
-          email: email,
-          password: password
-        }
-      });
-
-    }
-    catch(error) {
-      console.log(error);
-    }
-
-
-  }
-
   //TODO: REGISTER FUNCTIONALITY
-
 
   return (
     <Container>
       <Wrapper>
         <Title>Sign in</Title>
-        <SubTitle>to continue to videoTube</SubTitle>
+        <SubTitle>to continue to VideoTube</SubTitle>
         <Input
           placeholder="username"
           onChange={(e) => setName(e.target.value)}
@@ -149,6 +142,8 @@ const SignIn = () => {
         <Title>or</Title>
         <Button onClick={signInWithGoogle}>Signin with Google</Button>
         <Title>or</Title>
+        <p className={msg? 'suceessmsg' : 'hidden'}>{msg}</p>
+        <p className={errmsg? 'errormsg' : 'hidden'}>{errmsg}</p>
         <Input
           placeholder="username"
           onChange={(e) => setName(e.target.value)}
@@ -159,7 +154,7 @@ const SignIn = () => {
           placeholder="password"
           onChange={(e) => setPassword(e.target.value)}
         />
-        <Button onClick={handleSignUp}>Sign up</Button>
+        <Button onClick={handleRegister}>Sign UP</Button>
       </Wrapper>
       <More>
         English(USA)

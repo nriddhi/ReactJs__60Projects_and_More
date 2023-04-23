@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
+import { logout } from "../redux/userSlice";
 import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
 import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../store/Userslice";
+
 import Upload from "./Upload";
-import { Dropdown, Space } from 'antd';
 
 const Container = styled.div`
   position: sticky;
@@ -79,24 +80,39 @@ const Avatar = styled.img`
 const Navbar = () => {
   const navigate = useNavigate()
   const [open, setOpen] = useState(false);
+  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleDropdown = () => setIsOpen(!isOpen);
   const [q, setQ] = useState("");
   const { currentUser } = useSelector((state) => state.user);
-  const dispatch = useDispatch();
-  const loginout = () => {
+
+  const signout = async (e) => {
+    try {
+      await axios.post("/auth/logout", {data:'Logout'},{withCredentials: true});
       dispatch(logout());
-  }
-  const items = [
-    {
-      key: '1',
-      label: (
-        
-        <Button onClick={loginout}>  Logout </Button>
-      ),
-    },
-  ];
+      navigate("/")
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleOutsideClick = (event) => {
+    const dropdownContainer = document.querySelector('.dropdown-toggle');
+    const dropmenu = document.querySelector('.dropdown-menu');
+    if (dropdownContainer && !dropmenu?.contains(event.target) && !dropdownContainer?.contains(event.target)) {
+      setIsOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, []);
   return (
     <>
-      <Container>
+      <Container className="container">
         <Wrapper>
           <Search>
             <Input
@@ -107,19 +123,16 @@ const Navbar = () => {
           </Search>
           {currentUser ? (
             <User>
-              <VideoCallOutlinedIcon onClick={() => setOpen(true)} />       
-              <Dropdown
-              menu={{
-               items,
-               }}
-             >
-          <a onClick={(e) => e.preventDefault()}>
-          <Space>
-          <Avatar src={currentUser.img} />
-          {currentUser.username}
-          </Space>
-           </a>
-          </Dropdown>
+              <VideoCallOutlinedIcon onClick={() => setOpen(true)} />
+              <div className="dropdown-toggle" onClick={toggleDropdown}>
+              <Avatar src={currentUser.img} />
+              <p>{currentUser.name}</p>
+              </div>
+              {isOpen && (
+        <ul className="dropdown-menu">
+          <li onClick={signout}>Logout</li>
+        </ul>
+      )}
             </User>
           ) : (
             <Link to="signin" style={{ textDecoration: "none" }}>
