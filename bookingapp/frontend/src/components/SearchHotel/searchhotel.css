@@ -1,0 +1,276 @@
+.searchHotel {
+  border: 1px solid lightgray;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  height: max-content;
+}
+.searchHotelub {
+  border: 1px solid lightgray;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 20px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  position: relative;
+}
+.shContainer {
+  width: 250px;
+  height: 250px;
+  display: flex;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+}
+.ubContainer {
+  display: flex;
+  flex-direction: column;
+  gap: -20px;
+}
+.see {
+  margin-top: -20px;
+  font-size: 12px;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.roomNumberContainer {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(1, 22px);
+  grid-column-gap: 10px;
+}
+.ubContainer > div > label {
+  font-weight: 500;
+}
+.ubContainer > div > p {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.shImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shDesc {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 2;
+}
+
+.shTitle {
+  font-size: 20px;
+  color: #0071c2;
+  text-transform: capitalize;
+  margin-top: 0px;
+}
+.shCity {
+  text-transform: capitalize;
+  margin-top: -20px;
+  font-weight: 600;
+  color: black;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.shDistance {
+  font-size: 12px;
+}
+.shTaxiOp {
+  font-size: 12px;
+  color: white;
+  background-color: #008009;
+  width: max-content;
+  padding: 5px;
+  border-radius: 5px;
+}
+.shSubtitle {
+  font-size: 12px;
+  font-weight: bold;
+}
+.sehDesciption {
+  height: 50px;
+  overflow: hidden;
+}
+.shFeaturesSee {
+  overflow: visible;
+  margin-bottom: 7px;
+}
+.shFeatures {
+  font-size: 12px;
+}
+.shCancelOp {
+  font-size: 12px;
+  color: #008009;
+  font-weight: bold;
+}
+.shCancelOpSubtitle {
+  font-size: 12px;
+  color: #008009;
+}
+.shDetails {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.shRatings {
+  display: flex;
+  justify-content: space-between;
+}
+
+.shRatings > span {
+  font-weight: 500;
+}
+.shRatings > button {
+  background: #003580;
+  color: white;
+  padding: 5px;
+  font-weight: bold;
+  border: none;
+}
+
+.bookingClosed {
+  background: rgba(0, 0, 0, 0.445);
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.bookingClosed > h4 {
+  color: red;
+  font-size: 20px;
+  border: 5px solid white;
+  padding: 10px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.507);
+}
+
+.shDetailsTexts {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.shPrice {
+  font-size: 23px;
+}
+.shPriceDesc {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  justify-content: right;
+}
+.startingFromsh {
+  font-size: 12px;
+}
+.shTaxOp {
+  font-size: 12px;
+  color: gray;
+}
+.shCheckButton {
+  background-color: #0071c2;
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+@media (min-width: 320px) and (max-width: 480px) {
+  .searchHotel {
+    border: 1px solid lightgray;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+  }
+  .searchHotelub {
+    border: 1px solid lightgray;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+    position: relative;
+  }
+  .shContainer {
+    width: 100%;
+    height: 200px;
+    display: flex;
+  }
+  .shDesc {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 10;
+  }
+  .shTitle {
+    font-size: 15px;
+    margin-bottom: 11px;
+  }
+
+  .shCity {
+    font-size: 11px;
+  }
+  .shDistance {
+    font-size: 10px;
+  }
+  .shTaxiOp {
+    font-size: 9px;
+  }
+  .shSubtitle {
+    font-size: 10px;
+    font-weight: bold;
+  }
+  .shFeatures {
+    font-size: 10px;
+  }
+  .shCancelOp {
+    font-size: 10px;
+    color: #008009;
+    font-weight: bold;
+  }
+  .shCancelOpSubtitle {
+    font-size: 10px;
+    color: #008009;
+  }
+  .shPrice {
+    font-size: 17px;
+  }
+  .shTaxOp {
+    font-size: 9px;
+    color: gray;
+  }
+  .shCheckButton {
+    background-color: #0071c2;
+    color: white;
+    font-weight: bold;
+    font-size: 10px;
+    padding: 10px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 10px;
+  }
+}

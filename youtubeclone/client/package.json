@@ -1,5 +1,6 @@
 {
   "name": "video_app",
+  "homepage" : "https://www.nayeemriddhi.info/youtubeclone",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

@@ -3,66 +3,57 @@ import Login from "./pages/login/Login";
 import List from "./pages/list/List";
 import Single from "./pages/single/Single";
 import New from "./pages/new/New";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { productInputs, userInputs } from "./formSource";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { hotelInputs, roomInputs, userInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
-import { AuthContext } from "./context/AuthContext";
+import CheckAuth from "./components/CheckAuth/CheckAuth";
 import { hotelColumns, roomColumns, userColumns } from "./datatablesource";
 import NewHotel from "./pages/newHotel/NewHotel";
 import NewRoom from "./pages/newRoom/NewRoom";
+import SingleHotel from "./pages/SingleHotel/SingleHotel";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
-  const ProtectedRoute = ({ children }) => {
-    const { user } = useContext(AuthContext);
-
-    if (!user) {
-      return <Navigate to="/login" />;
-    }
-
-    return children;
-  };
-
   return (
     <div className={darkMode ? "app dark" : "app"}>
-      <BrowserRouter>
+      <BrowserRouter basename="/bookingapp/admin">
         <Routes>
           <Route path="/">
-            <Route path="login" element={<Login />} />
             <Route
               index
               element={
-                <ProtectedRoute>
+                <CheckAuth>
                   <Home />
-                </ProtectedRoute>
+                </CheckAuth>
               }
             />
+            <Route path="login" element={<Login />} />
             <Route path="users">
               <Route
                 index
                 element={
-                  <ProtectedRoute>
+                  <CheckAuth>
                     <List columns={userColumns} />
-                  </ProtectedRoute>
+                  </CheckAuth>
                 }
               />
               <Route
                 path=":userId"
                 element={
-                  <ProtectedRoute>
+                  <CheckAuth>
                     <Single />
-                  </ProtectedRoute>
+                  </CheckAuth>
                 }
               />
               <Route
                 path="new"
                 element={
-                  <ProtectedRoute>
+                  <CheckAuth>
                     <New inputs={userInputs} title="Add New User" />
-                  </ProtectedRoute>
+                  </CheckAuth>
                 }
               />
             </Route>
@@ -70,25 +61,25 @@ function App() {
               <Route
                 index
                 element={
-                  <ProtectedRoute>
+                  <CheckAuth>
                     <List columns={hotelColumns} />
-                  </ProtectedRoute>
+                  </CheckAuth>
                 }
               />
               <Route
-                path=":productId"
+                path=":hotelId"
                 element={
-                  <ProtectedRoute>
-                    <Single />
-                  </ProtectedRoute>
+                  <CheckAuth>
+                    <SingleHotel />
+                  </CheckAuth>
                 }
               />
               <Route
                 path="new"
                 element={
-                  <ProtectedRoute>
-                    <NewHotel  />
-                  </ProtectedRoute>
+                  <CheckAuth>
+                    <NewHotel inputs={hotelInputs} title="Add New Hotel" />
+                  </CheckAuth>
                 }
               />
             </Route>
@@ -96,25 +87,25 @@ function App() {
               <Route
                 index
                 element={
-                  <ProtectedRoute>
+                  <CheckAuth>
                     <List columns={roomColumns} />
-                  </ProtectedRoute>
+                  </CheckAuth>
                 }
               />
               <Route
-                path=":productId"
+                path=":roomId"
                 element={
-                  <ProtectedRoute>
+                  <CheckAuth>
                     <Single />
-                  </ProtectedRoute>
+                  </CheckAuth>
                 }
               />
               <Route
                 path="new"
                 element={
-                  <ProtectedRoute>
-                    <NewRoom  />
-                  </ProtectedRoute>
+                  <CheckAuth>
+                    <NewRoom inputs={roomInputs} title="Add New Room" />
+                  </CheckAuth>
                 }
               />
             </Route>

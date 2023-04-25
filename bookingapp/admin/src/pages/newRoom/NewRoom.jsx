@@ -1,78 +1,90 @@
 import "./newRoom.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
-import { roomInputs } from "../../formSource";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
-
-const NewRoom = () => {
-  const [info, setInfo] = useState({});
+const NewRoom = ({ inputs, title }) => {
   const [hotelId, setHotelId] = useState(undefined);
-  const [rooms, setRooms] = useState([]);
+  const [roomN, setRoomNumber] = useState(undefined);
+  const [info, setInfo] = useState({});
+  const { data, loading, error } = useFetch("/hotels/all");
 
-  const { data, loading, error } = useFetch("/hotels");
-
-  const handleChange = (e) => {
-    setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  const HandleChange = (e) => {
+    setInfo((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
   };
-
-  const handleClick = async (e) => {
+  const HandleClick = async (e) => {
     e.preventDefault();
-    const roomNumbers = rooms.split(",").map((room) => ({ number: room }));
+    const roomNumbers = roomN.split(",").map((room) => ({ number: room }));
+
+    const newRoom = {
+      ...info,
+      roomNumbers,
+    };
+
     try {
-      await axios.post(`/rooms/${hotelId}`, { ...info, roomNumbers });
-    } catch (err) {
-      console.log(err);
+      if (hotelId) {
+        const res = axios.post(`/rooms/${hotelId}`, newRoom);
+        if (res) {
+          document.getElementById("roomForm").reset();
+        }
+      } else {
+        alert("Choose Hotel");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  console.log(info)
   return (
     <div className="new">
       <Sidebar />
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add New Room</h1>
+          <h1>{title}</h1>
         </div>
         <div className="bottom">
-          <div className="right">
-            <form>
-              {roomInputs.map((input) => (
+          <div className="Roomright">
+            <form id="roomForm">
+              {inputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
                   <input
-                    id={input.id}
                     type={input.type}
+                    name={input.id}
+                    onChange={HandleChange}
                     placeholder={input.placeholder}
-                    onChange={handleChange}
                   />
                 </div>
               ))}
               <div className="formInput">
-                <label>Rooms</label>
+                <label>Room Numbers</label>
                 <textarea
-                  onChange={(e) => setRooms(e.target.value)}
-                  placeholder="give comma between room numbers."
-                />
+                  onChange={(e) => setRoomNumber(e.target.value)}
+                  placeholder="give comma between room numbers"
+                ></textarea>
               </div>
               <div className="formInput">
-                <label>Choose a hotel</label>
+                <label>Choose Hotel</label>
                 <select
                   id="hotelId"
                   onChange={(e) => setHotelId(e.target.value)}
                 >
                   {loading
-                    ? "loading"
+                    ? "loading..."
                     : data &&
-                      data.map((hotel) => (
-                        <option key={hotel._id} value={hotel._id}>{hotel.name}</option>
+                      data?.map((hotel) => (
+                        <option value={hotel._id} key={hotel._id}>
+                          {hotel.name} / City:{hotel.city}
+                        </option>
                       ))}
                 </select>
               </div>
-              <button onClick={handleClick}>Send</button>
+              <button onClick={HandleClick}>Send</button>
             </form>
           </div>
         </div>

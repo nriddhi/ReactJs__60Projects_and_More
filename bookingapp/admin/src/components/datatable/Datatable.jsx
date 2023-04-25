@@ -1,26 +1,38 @@
 import "./datatable.scss";
 import { DataGrid } from "@mui/x-data-grid";
-import { userColumns, userRows } from "../../datatablesource";
 import { Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import useFetch from "../../hooks/useFetch";
 import axios from "axios";
+import { useEffect, useState } from "react";
 
-const Datatable = ({columns}) => {
+const Datatable = ({ columns }) => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
-  const [list, setList] = useState();
-  const { data, loading, error } = useFetch(`/${path}`);
-
+  const [list, setList] = useState([]);
   useEffect(() => {
-    setList(data);
-  }, [data]);
+    async function getUsers() {
+      try {
+        if (path === "hotels") {
+          const res = await axios.get(`/${path}?admin=true`);
+          setList(res.data);
+        }
+        const res = await axios.get(`/${path}`);
+        setList(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getUsers();
+  }, [path]);
 
+  console.log(list);
   const handleDelete = async (id) => {
     try {
       await axios.delete(`/${path}/${id}`);
       setList(list.filter((item) => item._id !== id));
-    } catch (err) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const actionColumn = [
@@ -31,9 +43,14 @@ const Datatable = ({columns}) => {
       renderCell: (params) => {
         return (
           <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
-            </Link>
+            {path !== "rooms" && (
+              <Link
+                to={`/${path}/${params.row._id}`}
+                style={{ textDecoration: "none" }}
+              >
+                <div className="viewButton">View</div>
+              </Link>
+            )}
             <div
               className="deleteButton"
               onClick={() => handleDelete(params.row._id)}

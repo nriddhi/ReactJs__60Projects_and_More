@@ -12,7 +12,8 @@ import SignIn from "./pages/SignIn";
 import Search from "./pages/Search";
 import { useSelector } from "react-redux";
 
-Axios.defaults.baseURL = "http://localhost:8800/api"
+Axios.defaults.baseURL = "https://youtubeclone-nayeemriddhi.up.railway.app/api"
+Axios.defaults.withCredentials = true;
 
 const Container = styled.div`
   display: flex;
@@ -34,7 +35,7 @@ function App() {
   return (
     <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
       <Container>
-        <BrowserRouter>
+        <BrowserRouter basename="/youtubeclone">
           <Menu darkMode={darkMode} setDarkMode={setDarkMode} />
           <Main>
             <Navbar />

@@ -1,0 +1,117 @@
+.navbar {
+  height: 50px;
+  background-color: #003480;
+  display: flex;
+  justify-content: center;
+}
+.navUserProfile {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.mobileNav {
+  display: none;
+}
+.navContainer {
+  width: 100%;
+  margin-top: 12px;
+  max-width: 1024px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.logo {
+  font-weight: bold;
+  font-size: 24px;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+.navButton {
+  margin-left: 20px;
+  background: white;
+  border: none;
+  padding: 8px 10px;
+  cursor: pointer;
+  color: blue;
+  font-size: 13px;
+  font-weight: bold;
+  border: 1px solid blue;
+}
+.profileModalContainer {
+  border: 1px solid white;
+  width: 150px;
+  border-radius: 5px;
+  position: absolute;
+  right: 120px;
+  z-index: 3;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: white;
+  margin-top: 10px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+.profileModalContainerbox {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: black;
+  justify-content: left;
+  cursor: pointer;
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .navbar {
+    width: 100%;
+  }
+  .navContainer {
+    max-width: 95%;
+  }
+  .profileModalContainer {
+    border: 1px solid white;
+    width: 150px;
+    border-radius: 5px;
+    position: absolute;
+    right: 6px;
+    z-index: 3;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: white;
+    margin-top: 10px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  }
+}
+@media (min-width: 320px) and (max-width: 480px) {
+  .navbar {
+    width: 100%;
+    position: relative;
+  }
+  .navContainer {
+    max-width: 95%;
+  }
+  .navItems {
+    display: none;
+  }
+  .logo {
+    font-weight: bold;
+    font-size: 20px;
+    font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  }
+  .navUserProfile {
+    display: none;
+  }
+  .mobileNav {
+    display: block;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .profileModalContainer {
+    display: none;
+  }
+  .desktopNavbar {
+    display: none;
+  }
+}

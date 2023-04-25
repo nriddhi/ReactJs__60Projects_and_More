@@ -165,7 +165,7 @@ const Video = ({type}) => {
       <Content>
         <VideoWrapper>
           <ReactPlayer
-        url={currentVideo.videoUrl}
+        url={currentVideo?.videoUrl}
         controls
         width="640"
         height="360"
