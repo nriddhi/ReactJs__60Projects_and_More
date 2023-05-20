@@ -88,7 +88,7 @@ function Login(props) {
         let response = loginData({userData, password});
 
         const value = await response;
-        console.log(value);
+        //console.log(value);
         if(value) { setSubmitting(false);}
         if(value?.data?.code==='l200'){
             setSuccess('Logged in successfully');
