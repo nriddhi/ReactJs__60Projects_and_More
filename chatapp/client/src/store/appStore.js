@@ -9,6 +9,7 @@ import contactsReducer from "./contactsSlice";
 import userReducer from "./userSlice";
 import socketReducer from "./socketSlice";
 import chatListReducer from "./chatListSlice";
+import {apiSlice} from "./apliSlice";
 
 const store = configureStore({
   reducer: {
@@ -22,7 +23,12 @@ const store = configureStore({
     userReducer,
     socketReducer,
     chatListReducer,
+    [apiSlice.reducerPath]: apiSlice.reducer,
   },
+
+  middleware: (getDefaultMiddleware) =>
+  getDefaultMiddleware().concat(apiSlice.middleware),
+
 });
 
 export default store;

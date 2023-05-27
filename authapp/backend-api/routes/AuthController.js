@@ -46,6 +46,7 @@ const bcrypt = require('bcrypt');
     else if(!emailValidator.validate(req.body.userData)) {
 
       const uname = await User.findOne({ username: req.body.userData });
+      console.log(uname);
       if(!uname) return res.status(404).json({code:'lu404', msg:'Username Not Found'});
 
       const verified = await User.findOne({ username: req.body.userData });

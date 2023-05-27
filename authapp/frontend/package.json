@@ -1,6 +1,6 @@
 {
   "name": "auth",
-  "homepage" : "https://www.nayeemriddhi.info/authapp",
+  "homepage" : "https://www.nayeemriddhi.info/chatapp",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
