@@ -8,6 +8,8 @@ const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const fs = require("fs");
+const cloudinaryUploadImg = require("../utils/cloudinary");
+
 
 // create product
 router.post(
@@ -21,10 +23,17 @@ router.post(
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
         const files = req.files;
-        const imageUrls = files.map((file) => `${file.filename}`);
+        const uploadResults = [];
 
+      for (const file of files) {
+      const imagePath = file.path;
+      const originalFileName = file.originalname;
+      
+      const result = await cloudinaryUploadImg(imagePath, originalFileName);
+      uploadResults.push(result.secure_url);
+    }
         const productData = req.body;
-        productData.images = imageUrls;
+        productData.images = uploadResults;
         productData.shop = shop;
 
         const product = await Product.create(productData);
